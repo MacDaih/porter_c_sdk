@@ -3,7 +3,5 @@
 
 #include "packet.h"
 
-void client_loop(char * addr, int port, struct packet **payload, size_t len);
-
-int dial(char * addr, int port, struct packet * connect,  int (*callback)(struct packet * pkt, unsigned char *));
+int dial_start(char * addr, int port, context ctx, struct packet * connect,  int (*callback)(unsigned char *));
 #endif // TCP_CLIENT_H_

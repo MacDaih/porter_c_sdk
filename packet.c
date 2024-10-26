@@ -16,7 +16,6 @@ const uint8_t WILL_FLAG = 0x00;
 struct params {
     char * user;
     char *pwd;
-    //bool will;
     uint8_t qos;
 };
 
@@ -307,6 +306,16 @@ void make_publish(
     pkt->cursor = 0;
 }
 
+void make_puback(
+    context ctx, 
+    struct packet * pkt,
+    char * topic,
+    char * payload,
+    property props[2]
+) {
+
+}
+
 void make_disconnect(struct packet * pkt) {
     write_byte(0xe0, pkt);
     encode_varint(1, pkt);
@@ -341,19 +350,18 @@ struct packet * new_from_payload(unsigned char * raw) {
 }
 
 
-int publish_callback(struct packet * p, unsigned char * payload) {
-    if(p == NULL) return 0;
-
-    unsigned char cmd = payload[0];
-    // TODO checkout incoming payload
-    bzero(payload, 1024);
+packet * packet_callback(context ctx, unsigned char * payload) {
     switch(cmd) {
-        case 0x20:
-            memcpy(payload, p->payload, p->len);
-            return 1;
+        case connack_cmd:
+            return NULL;
+        case suback_cmd:
+            return NULL;
+        case publish_cmd:
+            if(ctx.will_qos == 0x0800) // TODO handle puback depending on QoS
+                printf("todo return puback");
         default:
-            return 0;
+            return NULL;
     }
-    return 0;
+    return NULL;
 }
 

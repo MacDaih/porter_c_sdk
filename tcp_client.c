@@ -11,48 +11,51 @@
 
 #define MAX 1024
 
-int dial(char * addr, int port, struct packet * p, int (*callback)(struct packet * pkt, unsigned char *)) {
+int dial_start(
+        char * addr,
+        int port,
+        context ctx,
+        struct packet * p,
+        packet * (*callback)(unsigned char *),
+) {
+    packet * cursor = p;
+    
     int sockfd, connfd;
     struct sockaddr_in servaddr, cli;
  
-    // socket create and verification
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) {
         printf("socket creation failed...\n");
         return 1;
     }
-//    else
-//        printf("Socket successfully created..\n");
- 
 
     bzero((char *) &servaddr, sizeof(servaddr));
     // assign IP, PORT
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = inet_addr(addr);
     servaddr.sin_port = htons(port);
-    // connect the client socket to server socket
+
     if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr))
         != 0) {
         printf("connection with the server failed...\n");
         return 1;
     }
-//    else
-//        printf("connected to the server..\n");
- 
+
     unsigned char buff[MAX];
-    
-    write(sockfd, p->payload, 1024);
+    while(cursor) {
+        if(int r = write(sockfd, cursor->payload, 1024);  r < 0) return 1;
 
-    read(sockfd, buff, sizeof(buff));
+        if(int r = read(sockfd, buff, sizeof(buff)); r < 0) return 1;
+        
+        // read packet callback
+        packet * np = callback(ctx, buff);
 
-    while(callback(p->next, (unsigned char *)(&buff)) == 1) {
-        write(sockfd, buff, sizeof(buff));
-        if(buff[0] == 0xe0 || buff[0] == 0x30) break;
-
-        bzero(&buff, sizeof(buff));
-        read(sockfd, buff, sizeof(buff));
+        // append to packet list
+        if(np != NULL) {
+            np->next = cursor->next;
+            cursor->next = np;
+        }
+        cursor = cursor->next;
     }
-
-    close(sockfd);
     return 0;
 }

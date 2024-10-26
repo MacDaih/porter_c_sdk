@@ -4,6 +4,25 @@
 #include <stdint.h>
 //const unsigned char MQTT[6] = {0x00,0x04,0x4D,0x51,0x54,0x54};
 
+// Packet Command Codes
+//
+
+const uint8_t CONNECT_CMD = 0x10;
+const uint8_t CONNACK_CMD = 0x20;
+const uint8_t PUBLISH_CMD = 0x30;
+const uint8_t PUBACK_CMD = 0x40;
+const uint8_t PUBREC_CMD = 0x50;
+const uint8_t PUBREL_CMD = 0x60;
+const uint8_t PUBCOMP_CMD = 0x70;
+const uint8_t SUBSCRIBE_CMD = 0x80;
+const uint8_t SUBACK_CMD = 0x90;
+const uint8_t UNSUBSCRIBE_CMD = 0xA0;
+const uint8_t UNSUBACK_CMD = 0xB0;
+const uint8_t PINGREQ_CMD = 0xC0;
+const uint8_t PINGRESP_CMD = 0xD0;
+const uint8_t DISCONNECT_CMD = 0xE0;
+const uint8_t AUTH_CMD = 0xF0;
+
 struct packet {
     size_t cursor;
     size_t len;
@@ -55,6 +74,19 @@ struct {
 enum packet_type {
     connect_cmd = 0x10,
     connack_cmd = 0x20,
+    publish_cmd = 0x30,
+    puback_cmd = 0x40,
+    pubrec_cmd = 0x50,
+    pubrel_cmd = 0x60,
+    pubcomp_cmd = 0x70,
+    subscribe_cmd = 0x80,
+    suback_cmd = 0x90,
+    unsubscribe_cmd = 0xA0,
+    unsuback_cmd = 0xB0,
+    pingreq_cmd = 0xC0,
+    pingresp_cmd = 0xD0,
+    disconnect_cmd = 0xE0,
+    auth_cmd = 0xF0,
 };
 
 struct packet * new_packet();
@@ -71,5 +103,5 @@ void write_fix_header(enum packet_type ptype, struct packet * pkt);
 void make_connect(context ctx, struct packet * pkt, property * props);
 void make_publish(context ctx, struct packet * pkt, char * topic,char * payload, property * props);
 
-int publish_callback(struct packet * p, unsigned char * payload);
+int packet_callback(struct packet * p, unsigned char * payload);
 #endif // PACKET_H_
