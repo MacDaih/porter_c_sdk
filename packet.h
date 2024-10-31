@@ -29,6 +29,7 @@ struct packet {
     uint8_t type;
     unsigned char * payload;
     struct packet * next;
+    uint16_t delay;
 };
 
 void write_byte(uint8_t byte, struct packet * pkt);
@@ -40,7 +41,6 @@ struct {
     unsigned will_qos:2;
     unsigned will_flag:1;
     unsigned clean_start: 1;
-
 
     uint16_t keep_alive;
 

@@ -10,6 +10,7 @@ const char * CLIENT_PWD = "PWD";
 const char * CLIENT_USR = "USER";
 const char * SERVER_ADDR = "SERVER_ADDR";
 
+char** client_subscriptions;
 
 int init_client(client * c, QOS qos, uint16_t session_duration, uint16_t keep_alive) {
     char * id = getenv(CLIENT_ID);
@@ -83,17 +84,12 @@ packet * build_connect(client c) {
     return p;
 }
 
-int subscribe(client c, char ** topic) {
-    struct packet * connect = new_packet();
-    struct packet * subscribe = new_packet();
+int subscribe(client c, char [][]topics) {
+    struct packet * connect = build_connect(c);
 
+    struct packet * sub = new_packet();
 
-
-    uint16_t interval = c.session_duration / c.keep_alive;
-    for(uint16_t i = 0; i < interval; i++) {
-        struct packet * ping = new_packet();
-        
-    }
+    connect->next = subscribe;
 
     struct packet * disc = new_packet();
     return 0;

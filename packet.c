@@ -261,7 +261,7 @@ void make_connect(context ctx, struct packet * pkt, property props[8]) {
 } 
 
 void make_ping(struct packet * pkt) {
-    write_byte(0xC0, pkt);
+    write_byte(pingreq_cmd, pkt);
     encode_varint(0, pkt);
 }
 
@@ -357,7 +357,7 @@ packet * packet_callback(context ctx, unsigned char * payload) {
         case suback_cmd:
             return NULL;
         case publish_cmd:
-            if(ctx.will_qos == 0x0800) // TODO handle puback depending on QoS
+            if(ctx.will_qos == QOS_ONE) // TODO handle puback depending on QoS
                 printf("todo return puback");
         default:
             return NULL;
