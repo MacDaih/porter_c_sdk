@@ -365,3 +365,12 @@ packet * packet_callback(context ctx, unsigned char * payload) {
     return NULL;
 }
 
+
+void free_list(struct packet * p) {
+    struct packet* tmp;
+    while (p != NULL) {
+        tmp = p;
+        p = p->next;
+        free(tmp);
+    }
+}

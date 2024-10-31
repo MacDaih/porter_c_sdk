@@ -49,17 +49,18 @@ int dial_start(
         if(send(sockfd, cursor->payload, sizeof(cursor->payload)) < 1) return 1;
         
         int ret = recv(sockfd, buff, sizeof(buff)); r < 0)
+
+        packet * np = NULL; 
+        // Append Ping Request server on TIMEOUT
         if (ret == -1 && errno == EAGAIN) {
-            // ping server
-            packet * ping = (packet *) malloc(sizeof(packet));
+            struct packet * ping = (struct packet *) malloc(sizeof(struct packet));
             make_ping(ping);
-            if(send(sockfd, ping->payload, sizeof(ping->payload)) < 1) return 1;
-            free(ping);
+            np = ping;
+        } else {
+            // read packet from callback
+            np = callback(ctx, buff);
         }
-
-        // read packet callback
-        packet * np = callback(ctx, buff);
-
+        
         // append to packet list
         if(np != NULL) {
             np->next = cursor->next;

@@ -52,8 +52,7 @@ int init_client(client * c, QOS qos, uint16_t session_duration, uint16_t keep_al
     return 0;
 }
 
-// send
-// receive
+
 packet * build_connect(client c) {
     struct packet * p = new_packet();
 
@@ -84,22 +83,21 @@ packet * build_connect(client c) {
     return p;
 }
 
+// TODO
 int subscribe(client c, char [][]topics) {
     struct packet * connect = build_connect(c);
 
     struct packet * sub = new_packet();
 
-    connect->next = subscribe;
+    connect->next = sub;
 
     struct packet * disc = new_packet();
+    sub->next = disc;
     return 0;
 }
 
-int publish(client c, char * topic, char * format, char * payload) {
+struct packet * init_connect(client * c) {
     struct packet * p = new_packet();
-    struct packet * pub = new_packet();
-    struct packet * disc = new_packet();
-
     context ctx;
     ctx.user_flag = 1;
     ctx.pwd_flag = 1;
@@ -121,7 +119,10 @@ int publish(client c, char * topic, char * format, char * payload) {
     make_connect(ctx,p, conn_props);
 
     free(conn_props);
+    return p;
+} 
 
+struct packet * init_publish(char * topic, char * format, char * payload) {
     // make properties
     property * props = calloc(7,sizeof(property));
     if(format) {
@@ -143,20 +144,28 @@ int publish(client c, char * topic, char * format, char * payload) {
 
     make_publish(ctx, pub, topic, payload, props);
     free(props);
-
-    pub->next = disc;
-    p->next = pub;
-
-    int res = dial_start(c.addr, c.port, p, packet_callback);    
-    if(res != 0) printf("failed to publish message\n");
-
-    free_packet(p);
-    free_packet(pub);
-    free_packet(disc);
-
-    return res;
+    return pub;
 }
 
-int subscribe(client c, char** topics) {
-   return 0;
-} 
+void client_send(client * c, char * topic, char * format, char * payload) {
+    struct packet * conn = init_connect(c);
+    struct packet * pub = init_publish(topic, format, payload);
+    struct packet * disc = make_disconnect(new_packet());
+    pub->next = disc;
+    conn->next = pub;
+
+    int res = dial_start(c.addr, c.port, conn, packet_callback);    
+    if(res != 0) printf("failed to publish message\n");
+
+    free_list(conn);
+}
+
+void client_recv(client * c, char topics[][]) {
+    struct packet * conn = init_connect(c);
+
+    // TODO verify if client has already subscribed to topics from args
+    // then add to message list
+   
+    // TODO placeholder dealloc message list
+    free(conn);
+}
