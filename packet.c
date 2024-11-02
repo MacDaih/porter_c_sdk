@@ -13,6 +13,8 @@ const uint8_t WILL_RETAIN = 0x20;
 const uint16_t WILL_QOS = 0x0000;
 const uint8_t WILL_FLAG = 0x00;
 
+const size_t MAX_TOPICS = 10;
+
 struct params {
     char * user;
     char *pwd;
@@ -309,13 +311,11 @@ void make_publish(
 void make_subscribe(
     context ctx,
     struct packet * pkt,
-    char * topics[],
+    char * topics[]
     //property props[3]
 ) {
     
-	write_byte(subscribe_cmd, pkt); err != nil {
-		return nil, err
-	}
+	write_byte(subscribe_cmd, pkt);
 
     struct packet tmp = {0};
     write_uint16(pkt->id, &tmp);
@@ -323,9 +323,10 @@ void make_subscribe(
     // TODO props
     encode_varint(0, &tmp);
     
-    int nt = (int)(size_t(topics)/size_t(topics[0]));
-    for(int i = 0; i < nt; i++) {
-        encode_str(topics[i], &tmp);
+    char *ntopics[MAX_TOPICS];
+    memcpy(ntopics, topics, MAX_TOPICS);
+    for(int i = 0; i < (int)(MAX_TOPICS); i++) {
+        encode_str(ntopics[i], &tmp);
 
         // TODO handle subscription options
         write_byte(0, &tmp);
@@ -381,7 +382,8 @@ struct packet * new_from_payload(unsigned char * raw) {
 }
 
 
-packet * packet_callback(context ctx, unsigned char * payload) {
+struct packet * packet_callback(context ctx, unsigned char * payload) {
+    unsigned char cmd = payload[0];
     switch(cmd) {
         case connack_cmd:
             return NULL;

@@ -23,6 +23,12 @@ const uint8_t PINGRESP_CMD = 0xD0;
 const uint8_t DISCONNECT_CMD = 0xE0;
 const uint8_t AUTH_CMD = 0xF0;
 
+typedef enum {
+    QOS_ZERO = 0x00,
+    QOS_ONE = 0x08,
+    QOS_TWO = 0x18,
+} QOS ;
+
 struct packet {
     uint16_t id;
     size_t cursor;
@@ -101,8 +107,12 @@ void write_remaining_len(struct packet * pkt);
 void write_fix_header(enum packet_type ptype, struct packet * pkt);
 
 void make_connect(context ctx, struct packet * pkt, property * props);
+void make_disconnect(struct packet * pkt);
 void make_publish(context ctx, struct packet * pkt, char * topic,char * payload, property * props);
-void make_subscribe(context ctx,struct * pkt, char * topics[]);
+void make_subscribe(context ctx,struct packet * pkt, char * topics[]);
+void make_ping(struct packet * pkt);
 
-int packet_callback(struct packet * p, unsigned char * payload);
+struct packet * packet_callback(context ctx, unsigned char * payload);
+
+void free_list(struct packet * pkt);
 #endif // PACKET_H_

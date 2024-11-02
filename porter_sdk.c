@@ -53,7 +53,7 @@ int init_client(client * c, QOS qos, uint16_t session_duration, uint16_t keep_al
 }
 
 
-packet * build_connect(client c) {
+struct packet * build_connect(client c) {
     struct packet * p = new_packet();
 
     context ctx;
@@ -83,19 +83,6 @@ packet * build_connect(client c) {
     return p;
 }
 
-// TODO
-int subscribe(client c, char [][]topics) {
-    struct packet * connect = build_connect(c);
-
-    struct packet * sub = new_packet();
-
-    connect->next = sub;
-
-    struct packet * disc = new_packet();
-    sub->next = disc;
-    return 0;
-}
-
 struct packet * init_connect(client * c, context ctx) {
     struct packet * p = new_packet();
 
@@ -110,7 +97,22 @@ struct packet * init_connect(client * c, context ctx) {
     return p;
 } 
 
-struct packet * init_publish(char * topic, char * format, char * payload) {
+struct packet * init_publish(client * c,char * topic, char * format, char * payload) {
+    // TODO create method for context init
+    context ctx;
+    ctx.user_flag = 1;
+    ctx.pwd_flag = 1;
+    ctx.will_retain = 0;
+    ctx.will_qos = 0;
+    ctx.will_flag = 0;
+    ctx.clean_start = 0;
+
+    ctx.cid = c->client_id;
+    ctx.user = c->client;
+    ctx.pwd = c->client_pwd; 
+    ctx.keep_alive = 10;
+    //
+    
     struct packet * pub = new_packet();
     // make properties
     property * props = calloc(7,sizeof(property));
@@ -160,18 +162,20 @@ void client_send(client * c, char * topic, char * format, char * payload) {
     //
     
     struct packet * conn = init_connect(c, ctx);
-    struct packet * pub = init_publish(topic, format, payload);
-    struct packet * disc = make_disconnect(new_packet());
+    struct packet * pub = init_publish(c, topic, format, payload);
+    struct packet * disc = new_packet();
+    make_disconnect(disc);
+
     pub->next = disc;
     conn->next = pub;
 
-    int res = dial_start(c.addr, c.port, conn, packet_callback);    
+    int res = dial_start(c->addr, c->port, ctx, conn, packet_callback);    
     if(res != 0) printf("failed to publish message\n");
 
     free_list(conn);
 }
 
-void client_recv(client * c, char topics[][]) {
+void client_recv(client * c, char * topics[]) {
 
     // TODO create method for context init
     context ctx;
@@ -195,7 +199,7 @@ void client_recv(client * c, char topics[][]) {
     conn->next = sub;
 
     // TODO solve delayed disconnect
-    int res = dial_start(c.addr, c.port, conn, packet_callback);    
+    int res = dial_start(c->addr,  c->port, ctx, conn, packet_callback);    
     if(res != 0) printf("failed to subscribe to messages\n");
 
     free_list(conn);

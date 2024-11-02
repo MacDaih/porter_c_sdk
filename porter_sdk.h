@@ -1,11 +1,7 @@
 #ifndef PORTER_SDK_H_   /* Include guard */
 #define PORTER_SDK_H_
 
-typedef enum {
-    QOS_ZERO = 0x00;
-    QOS_ONE = 0x08;
-    QOS_TWO = 0x18;
-} QOS ;
+#include "packet.h"
 
 struct {
     char * addr;
@@ -25,5 +21,5 @@ struct {
 int init_client(client* c, QOS qos, uint16_t session_duration, uint16_t keep_alive);
 
 void client_send(client * c, char * topic, char * format, char * payload);
-void client_recv(client * c, char topic[][]);
+void client_recv(client * c, char * topic[]);
 #endif // PORTER_SDK_H_

@@ -6,6 +6,7 @@
 #include <strings.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <errno.h>
                 
 #include "packet.h"
 
@@ -16,9 +17,9 @@ int dial_start(
         int port,
         context ctx,
         struct packet * p,
-        packet * (*callback)(unsigned char *),
+        struct packet * (*callback)(context ctx, unsigned char *buff)
 ) {
-    packet * cursor = p;
+    struct packet * cursor = p;
     
     int sockfd, connfd;
     struct sockaddr_in servaddr, cli;
@@ -46,11 +47,11 @@ int dial_start(
 
     unsigned char buff[MAX];
     while(cursor) {
-        if(send(sockfd, cursor->payload, sizeof(cursor->payload)) < 1) return 1;
+        if(send(sockfd, cursor->payload, sizeof(cursor->payload), 0) < 1) return 1;
         
-        int ret = recv(sockfd, buff, sizeof(buff)); r < 0)
+        int ret = recv(sockfd, buff, sizeof(buff), 0);
 
-        packet * np = NULL; 
+        struct packet * np = NULL; 
         // Append Ping Request server on TIMEOUT
         if (ret == -1 && errno == EAGAIN) {
             struct packet * ping = (struct packet *) malloc(sizeof(struct packet));
