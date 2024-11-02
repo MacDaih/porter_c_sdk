@@ -24,12 +24,12 @@ const uint8_t DISCONNECT_CMD = 0xE0;
 const uint8_t AUTH_CMD = 0xF0;
 
 struct packet {
+    uint16_t id;
     size_t cursor;
     size_t len;
     uint8_t type;
     unsigned char * payload;
     struct packet * next;
-    uint16_t delay;
 };
 
 void write_byte(uint8_t byte, struct packet * pkt);
@@ -102,6 +102,7 @@ void write_fix_header(enum packet_type ptype, struct packet * pkt);
 
 void make_connect(context ctx, struct packet * pkt, property * props);
 void make_publish(context ctx, struct packet * pkt, char * topic,char * payload, property * props);
+void make_subscribe(context ctx,struct * pkt, char * topics[]);
 
 int packet_callback(struct packet * p, unsigned char * payload);
 #endif // PACKET_H_

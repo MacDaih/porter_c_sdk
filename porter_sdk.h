@@ -24,8 +24,6 @@ struct {
 
 int init_client(client* c, QOS qos, uint16_t session_duration, uint16_t keep_alive);
 
-void start(client* c, packet * p);
-
 void client_send(client * c, char * topic, char * format, char * payload);
 void client_recv(client * c, char topic[][]);
 #endif // PORTER_SDK_H_

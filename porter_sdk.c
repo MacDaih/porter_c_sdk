@@ -96,20 +96,8 @@ int subscribe(client c, char [][]topics) {
     return 0;
 }
 
-struct packet * init_connect(client * c) {
+struct packet * init_connect(client * c, context ctx) {
     struct packet * p = new_packet();
-    context ctx;
-    ctx.user_flag = 1;
-    ctx.pwd_flag = 1;
-    ctx.will_retain = 0;
-    ctx.will_qos = 0;
-    ctx.will_flag = 0;
-    ctx.clean_start = 0;
-
-    ctx.cid = c.client_id;
-    ctx.user = c.client;
-    ctx.pwd = c.client_pwd; 
-    ctx.keep_alive = 10;
 
     property * conn_props = calloc(8, sizeof(property));
     if(ctx.user && ctx.pwd) {
@@ -123,6 +111,7 @@ struct packet * init_connect(client * c) {
 } 
 
 struct packet * init_publish(char * topic, char * format, char * payload) {
+    struct packet * pub = new_packet();
     // make properties
     property * props = calloc(7,sizeof(property));
     if(format) {
@@ -147,8 +136,30 @@ struct packet * init_publish(char * topic, char * format, char * payload) {
     return pub;
 }
 
+struct packet * init_subcribe(client * c,context ctx, char * topics[]) {
+    // TODO make properties
+    struct packet * sub = new_packet();
+    make_subscribe(ctx, sub, topics);
+    return sub;
+}
+
 void client_send(client * c, char * topic, char * format, char * payload) {
-    struct packet * conn = init_connect(c);
+    // TODO create method for context init
+    context ctx;
+    ctx.user_flag = 1;
+    ctx.pwd_flag = 1;
+    ctx.will_retain = 0;
+    ctx.will_qos = 0;
+    ctx.will_flag = 0;
+    ctx.clean_start = 0;
+
+    ctx.cid = c->client_id;
+    ctx.user = c->client;
+    ctx.pwd = c->client_pwd; 
+    ctx.keep_alive = 10;
+    //
+    
+    struct packet * conn = init_connect(c, ctx);
     struct packet * pub = init_publish(topic, format, payload);
     struct packet * disc = make_disconnect(new_packet());
     pub->next = disc;
@@ -161,11 +172,31 @@ void client_send(client * c, char * topic, char * format, char * payload) {
 }
 
 void client_recv(client * c, char topics[][]) {
-    struct packet * conn = init_connect(c);
 
+    // TODO create method for context init
+    context ctx;
+    ctx.user_flag = 1;
+    ctx.pwd_flag = 1;
+    ctx.will_retain = 0;
+    ctx.will_qos = 0;
+    ctx.will_flag = 0;
+    ctx.clean_start = 0;
+
+    ctx.cid = c->client_id;
+    ctx.user = c->client;
+    ctx.pwd = c->client_pwd; 
+    ctx.keep_alive = 10;
+    //
+
+    struct packet * conn = init_connect(c, ctx);
     // TODO verify if client has already subscribed to topics from args
     // then add to message list
-   
-    // TODO placeholder dealloc message list
-    free(conn);
+    struct packet * sub = init_subcribe(c,ctx, topics);
+    conn->next = sub;
+
+    // TODO solve delayed disconnect
+    int res = dial_start(c.addr, c.port, conn, packet_callback);    
+    if(res != 0) printf("failed to subscribe to messages\n");
+
+    free_list(conn);
 }

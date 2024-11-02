@@ -272,7 +272,7 @@ void make_publish(
     char * payload,
     property props[7]
 ) {
-    write_byte(0x30 ^ (0 << 1), pkt);
+    write_byte(publish_cmd ^ (0 << 1), pkt);
     
     size_t rem_length = strlen(topic) + 2;
     rem_length += strlen(payload) + 2;
@@ -306,15 +306,46 @@ void make_publish(
     pkt->cursor = 0;
 }
 
+void make_subscribe(
+    context ctx,
+    struct packet * pkt,
+    char * topics[],
+    //property props[3]
+) {
+    
+	write_byte(subscribe_cmd, pkt); err != nil {
+		return nil, err
+	}
+
+    struct packet tmp = {0};
+    write_uint16(pkt->id, &tmp);
+
+    // TODO props
+    encode_varint(0, &tmp);
+    
+    int nt = (int)(size_t(topics)/size_t(topics[0]));
+    for(int i = 0; i < nt; i++) {
+        encode_str(topics[i], &tmp);
+
+        // TODO handle subscription options
+        write_byte(0, &tmp);
+    }
+
+    int len = (int)(tmp.cursor) + 1;
+    for(int c = 0; c < len; c++)
+        write_byte(tmp.payload[c], pkt);
+
+    write_remaining_len(pkt);
+    pkt->cursor = 0;
+}
+
 void make_puback(
     context ctx, 
     struct packet * pkt,
     char * topic,
     char * payload,
     property props[2]
-) {
-
-}
+) {}
 
 void make_disconnect(struct packet * pkt) {
     write_byte(0xe0, pkt);
@@ -371,6 +402,6 @@ void free_list(struct packet * p) {
     while (p != NULL) {
         tmp = p;
         p = p->next;
-        free(tmp);
+        free_packet(tmp);
     }
 }
