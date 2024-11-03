@@ -7,6 +7,22 @@
 
 #include "tcp_client.h"
 
+const uint8_t CONNECT_CMD = 0x10;
+const uint8_t CONNACK_CMD = 0x20;
+const uint8_t PUBLISH_CMD = 0x30;
+const uint8_t PUBACK_CMD = 0x40;
+const uint8_t PUBREC_CMD = 0x50;
+const uint8_t PUBREL_CMD = 0x60;
+const uint8_t PUBCOMP_CMD = 0x70;
+const uint8_t SUBSCRIBE_CMD = 0x80;
+const uint8_t SUBACK_CMD = 0x90;
+const uint8_t UNSUBSCRIBE_CMD = 0xA0;
+const uint8_t UNSUBACK_CMD = 0xB0;
+const uint8_t PINGREQ_CMD = 0xC0;
+const uint8_t PINGRESP_CMD = 0xD0;
+const uint8_t DISCONNECT_CMD = 0xE0;
+const uint8_t AUTH_CMD = 0xF0;
+
 const uint8_t USER_FLAG = 0x80;
 const uint8_t PWD_FLAG = 0x40;
 const uint8_t WILL_RETAIN = 0x20;

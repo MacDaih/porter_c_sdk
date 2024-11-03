@@ -12,7 +12,18 @@ const char * SERVER_ADDR = "SERVER_ADDR";
 
 char** client_subscriptions;
 
-int init_client(client * c, QOS qos, uint16_t session_duration, uint16_t keep_alive) {
+QOS parse_qos(int raw) {
+    switch(raw) {
+        case 2:
+            return QOS_TWO;
+        case 1:
+            return QOS_ONE;
+        default:
+            return QOS_ZERO;
+    }
+}
+
+int init_client(client * c, int qos, uint16_t session_duration, uint16_t keep_alive) {
     char * id = getenv(CLIENT_ID);
     if(!id) {
         printf("failed to read client id : CLIENT_ID not set");
@@ -47,7 +58,7 @@ int init_client(client * c, QOS qos, uint16_t session_duration, uint16_t keep_al
     //TODO check keep_alive < session_duration
     c->keep_alive = keep_alive;
     c->session_duration = session_duration;
-    c->qos = qos;
+    c->qos = parse_qos(qos);
 
     return 0;
 }
