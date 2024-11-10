@@ -73,10 +73,18 @@ int dial_start(
             make_ping(ping);
 
             bzero(buff, sizeof(buff));
-            int pres = send(sockfd, ping->payload, ping->len, 0);
+            int pres = write(sockfd, ping->payload, ping->len);
 
-            recv(sockfd, buff, sizeof(buff), 0);
+            int r_res = read(sockfd, buff, sizeof(buff));
+            if(r_res < 0) {
+              close(sockfd);
+              return 1;
+            }
 
+            if(packet_callback(ctx, buff, np)) {
+                close(sockfd);
+                return 0; 
+            }
         }
         
         // append to packet list
