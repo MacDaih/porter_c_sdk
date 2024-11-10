@@ -7,7 +7,9 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <errno.h>
-                
+#include <poll.h>
+#include <errno.h>
+
 #include "packet.h"
 
 #define MAX 1024
@@ -16,50 +18,65 @@ int dial_start(
         char * addr,
         int port,
         context ctx,
-        struct packet * p,
-        struct packet * (*callback)(context ctx, unsigned char *buff)
+        struct packet * p
 ) {
     struct packet * cursor = p;
     
     int sockfd, connfd;
     struct sockaddr_in servaddr, cli;
 
-    // TODO Set timeout 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) {
-        printf("socket creation failed...\n");
         return 1;
     }
 
+
     bzero((char *) &servaddr, sizeof(servaddr));
-    // assign IP, PORT
+
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = inet_addr(addr);
     servaddr.sin_port = htons(port);
 
-    struct timeval tv = {5, 0}; // TODO use timeout value from context
-    setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (struct timeval *)&tv, sizeof(struct timeval));
     if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr))
         != 0) {
-        printf("connection with the server failed...\n");
         return 1;
     }
 
     unsigned char buff[MAX];
-    while(cursor) {
-        if(send(sockfd, cursor->payload, sizeof(cursor->payload), 0) < 1) return 1;
-        
-        int ret = recv(sockfd, buff, sizeof(buff), 0);
 
+    struct pollfd fd;
+    fd.fd = sockfd;
+    fd.events = POLLIN;
+
+    while(cursor) {
+        int m_res = write(sockfd, cursor->payload, cursor->len);
+        if(m_res < 0) {
+            close(sockfd);
+            return 1; 
+        }
+    
         struct packet * np = NULL; 
-        // Append Ping Request server on TIMEOUT
-        if (ret == -1 && errno == EAGAIN) {
-            struct packet * ping = (struct packet *) malloc(sizeof(struct packet));
-            make_ping(ping);
-            np = ping;
+        if(poll(&fd, 1, (int)(ctx.keep_alive * 1000)) > 0) {
+          int r_res = read(sockfd,buff,sizeof(buff));
+          if(r_res < 0) {
+              close(sockfd);
+              return 1;
+          }
+
+          if(packet_callback(ctx, buff, np)) {
+              close(sockfd);
+              return 0; 
+          }
         } else {
-            // read packet from callback
-            np = callback(ctx, buff);
+            struct packet * disc = new_packet();
+            struct packet * ping = new_packet();
+            make_ping(ping);
+
+            bzero(buff, sizeof(buff));
+            int pres = send(sockfd, ping->payload, ping->len, 0);
+
+            recv(sockfd, buff, sizeof(buff), 0);
+
         }
         
         // append to packet list
@@ -67,8 +84,11 @@ int dial_start(
             np->next = cursor->next;
             cursor->next = np;
         }
+
         cursor = cursor->next;
         bzero(buff, sizeof(buff));
     }
+    
+    close(sockfd);
     return 0;
 }

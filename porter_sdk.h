@@ -1,6 +1,8 @@
 #ifndef PORTER_SDK_H_   /* Include guard */
 #define PORTER_SDK_H_
 
+//#include <stdint.h>
+
 struct {
     char * addr;
     int port;
@@ -18,6 +20,6 @@ struct {
 
 int init_client(client* c, int qos, uint16_t session_duration, uint16_t keep_alive);
 
-void client_send(client * c, char * topic, char * format, char * payload);
-void client_recv(client * c, char * topic[]);
+int client_send(client * c, char * topic, char * format, char * payload);
+int client_recv(client * c, char * topic[]);
 #endif // PORTER_SDK_H_

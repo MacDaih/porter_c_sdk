@@ -275,16 +275,18 @@ void make_connect(context ctx, struct packet * pkt, property props[8]) {
     encode_str(ctx.pwd, pkt);
     
     write_remaining_len(pkt);
+    
     pkt->cursor = 0;
 } 
 
 void make_ping(struct packet * pkt) {
     write_byte(pingreq_cmd, pkt);
     encode_varint(0, pkt);
+    write_remaining_len(pkt);
+    pkt->cursor = 0;
 }
 
 void make_publish(
-    context ctx, 
     struct packet * pkt,
     char * topic,
     char * payload,
@@ -325,7 +327,6 @@ void make_publish(
 }
 
 void make_subscribe(
-    context ctx,
     struct packet * pkt,
     char * topics[]
     //property props[3]
@@ -356,13 +357,13 @@ void make_subscribe(
     pkt->cursor = 0;
 }
 
-void make_puback(
-    context ctx, 
-    struct packet * pkt,
-    char * topic,
-    char * payload,
-    property props[2]
-) {}
+//void make_puback(
+//    context ctx, 
+//    struct packet * pkt,
+//    char * topic,
+//    char * payload,
+//    property props[2]
+//) {}
 
 void make_disconnect(struct packet * pkt) {
     write_byte(0xe0, pkt);
@@ -398,20 +399,23 @@ struct packet * new_from_payload(unsigned char * raw) {
 }
 
 
-struct packet * packet_callback(context ctx, unsigned char * payload) {
+int packet_callback(context ctx, unsigned char * payload, struct packet * receiver) {
     unsigned char cmd = payload[0];
+
     switch(cmd) {
-        case connack_cmd:
-            return NULL;
-        case suback_cmd:
-            return NULL;
-        case publish_cmd:
+        case CONNECT_CMD:
+            return 0;
+        case SUBACK_CMD:
+            return 0;
+        case PUBLISH_CMD:
             if(ctx.will_qos == QOS_ONE) // TODO handle puback depending on QoS
-                printf("todo return puback");
+            return 0;
+        case DISCONNECT_CMD:
+            return 1;
         default:
-            return NULL;
+            return 0;
     }
-    return NULL;
+    return 0;
 }
 
 

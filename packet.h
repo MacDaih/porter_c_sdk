@@ -108,11 +108,11 @@ void write_fix_header(enum packet_type ptype, struct packet * pkt);
 
 void make_connect(context ctx, struct packet * pkt, property * props);
 void make_disconnect(struct packet * pkt);
-void make_publish(context ctx, struct packet * pkt, char * topic,char * payload, property * props);
-void make_subscribe(context ctx,struct packet * pkt, char * topics[]);
+void make_publish(struct packet * pkt, char * topic,char * payload, property * props);
+void make_subscribe(struct packet * pkt, char * topics[]);
 void make_ping(struct packet * pkt);
 
-struct packet * packet_callback(context ctx, unsigned char * payload);
+int packet_callback(context ctx, unsigned char * payload, struct packet * receiver);
 
 void free_list(struct packet * pkt);
 #endif // PACKET_H_
