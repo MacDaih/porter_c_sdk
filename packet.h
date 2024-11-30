@@ -19,7 +19,7 @@ const uint8_t SUBACK_CMD = 0x90;
 const uint8_t UNSUBSCRIBE_CMD = 0xa0;
 const uint8_t UNSUBACK_CMD = 0xb0;
 const uint8_t PINGREQ_CMD = 0xc0;
-const uint8_t PINGRESP_CMD 0x0d;
+const uint8_t PINGRESP_CMD = 0x0d;
 const uint8_t DISCONNECT_CMD = 0xe0;
 const uint8_t AUTH_CMD = 0xf0;
 
