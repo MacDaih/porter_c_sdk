@@ -7,21 +7,21 @@
 // Packet Command Codes
 //
 
-const uint8_t CONNECT_CMD;
-const uint8_t CONNACK_CMD;
-const uint8_t PUBLISH_CMD;
-const uint8_t PUBACK_CMD;
-const uint8_t PUBREC_CMD;
-const uint8_t PUBREL_CMD;
-const uint8_t PUBCOMP_CMD;
-const uint8_t SUBSCRIBE_CMD;
-const uint8_t SUBACK_CMD;
-const uint8_t UNSUBSCRIBE_CMD;
-const uint8_t UNSUBACK_CMD;
-const uint8_t PINGREQ_CMD;
-const uint8_t PINGRESP_CMD;
-const uint8_t DISCONNECT_CMD;
-const uint8_t AUTH_CMD;
+const uint8_t CONNECT_CMD = 0x10;
+const uint8_t CONNACK_CMD = 0x20;
+const uint8_t PUBLISH_CMD = 0x030;
+const uint8_t PUBACK_CMD = 0x40;
+const uint8_t PUBREC_CMD = 0x50;
+const uint8_t PUBREL_CMD = 0x60;
+const uint8_t PUBCOMP_CMD = 0x70;
+const uint8_t SUBSCRIBE_CMD = 0x80;
+const uint8_t SUBACK_CMD = 0x90;
+const uint8_t UNSUBSCRIBE_CMD = 0xa0;
+const uint8_t UNSUBACK_CMD = 0xb0;
+const uint8_t PINGREQ_CMD = 0xc0;
+const uint8_t PINGRESP_CMD 0x0d;
+const uint8_t DISCONNECT_CMD = 0xe0;
+const uint8_t AUTH_CMD = 0xf0;
 
 typedef enum {
     QOS_ZERO = 0x00,
