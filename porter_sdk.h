@@ -1,7 +1,7 @@
 #ifndef PORTER_SDK_H_   /* Include guard */
 #define PORTER_SDK_H_
 
-//#include <stdint.h>
+#include <stdint.h>
 
 struct {
     char * addr;
