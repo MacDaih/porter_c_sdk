@@ -7,21 +7,21 @@
 // Packet Command Codes
 //
 
-#define CONNECT_CMD  0x10;
-#define CONNACK_CMD  0x20;
-#define PUBLISH_CMD  0x030;
-#define PUBACK_CMD  0x40;
-#define PUBREC_CMD  0x50;
-#define PUBREL_CMD  0x60;
-#define PUBCOMP_CMD 0x70;
-#define SUBSCRIBE_CMD  0x80;
-#define SUBACK_CMD  0x90;
-#define UNSUBSCRIBE_CMD  0xa0;
-#define UNSUBACK_CMD  0xb0;
-#define PINGREQ_CMD  0xc0;
-#define PINGRESP_CMD 0x0d;
-#define DISCONNECT_CMD  0xe0;
-#define AUTH_CMD  0xf0;
+#define CONNECT_CMD  0x10
+#define CONNACK_CMD  0x20
+#define PUBLISH_CMD  0x030
+#define PUBACK_CMD  0x40
+#define PUBREC_CMD  0x50
+#define PUBREL_CMD  0x60
+#define PUBCOMP_CMD 0x70
+#define SUBSCRIBE_CMD  0x80
+#define SUBACK_CMD  0x90
+#define UNSUBSCRIBE_CMD  0xa0
+#define UNSUBACK_CMD  0xb0
+#define PINGREQ_CMD  0xc0
+#define PINGRESP_CMD 0x0d
+#define DISCONNECT_CMD  0xe0
+#define AUTH_CMD  0xf0
 
 typedef enum {
     QOS_ZERO = 0x00,
