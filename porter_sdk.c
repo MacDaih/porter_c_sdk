@@ -175,8 +175,13 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     ctx.keep_alive = 10;
     //
     
+    printf("debug before init connect\n");
     struct packet * conn = init_connect(ctx);
+
+    printf("debug before init pub\n");
     struct packet * pub = init_publish(c, topic, format, payload);
+
+    printf("debug before init dics\n");
     struct packet * disc = new_packet();
     make_disconnect(disc);
 
