@@ -175,6 +175,7 @@ void write_fix_header(enum packet_type ptype, struct packet * pkt) {
 }
 
 uint8_t * write_properties(property props[], int prop_len, int * props_size) {
+    printf("debug before write propmalloc")
     uint8_t *enc = (uint8_t *) malloc(sizeof(uint8_t));
 
     int cursor = 0;
@@ -204,6 +205,7 @@ uint8_t * write_properties(property props[], int prop_len, int * props_size) {
         }
     }
 
+    printf("debug after write propmalloc")
     *props_size = cursor; 
     return enc;
 }
@@ -283,7 +285,7 @@ void make_publish(
     rem_length += strlen(payload) + 2;
 
 
-    //write_uint16(0, pkt);
+    write_uint16(0, pkt);
     // topic name
     int prop_size = 0; 
     uint8_t * prop_buff = write_properties(props, 7, &prop_size);
