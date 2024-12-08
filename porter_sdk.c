@@ -188,10 +188,12 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     struct packet * pub = init_publish(c, topic, format, payload);
 
     printf("debug before init dics\n");
-    struct packet * disc = init_disc(disc);
+    unsigned char disc[4] = {0x0e, 0x01, 0x00, 0x00};
+    
+    struct packet * discconn = new_from_payload(disc);
     printf("debug after make dics\n");
 
-    pub->next = disc;
+    pub->next = disconn;
     conn->next = pub;
 
     printf("debug before init send tcp\n");
