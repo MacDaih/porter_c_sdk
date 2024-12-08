@@ -370,12 +370,14 @@ void free_packet(struct packet * p) {
 }
 
 struct packet * new_packet() {
+    printf("debug before write pkt malloc");
     unsigned char * payload = (unsigned char*) malloc(1024);
     struct packet * p = (struct packet*) malloc(sizeof(struct packet));
 
     p->payload = payload;
     p->cursor = 0;
     return p;
+    printf("debug before write pkt malloc");
 }
 
 struct packet * new_from_payload(unsigned char * raw) {
