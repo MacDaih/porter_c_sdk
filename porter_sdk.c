@@ -190,6 +190,7 @@ int client_send(client * c, char * topic, char * format, char * payload) {
 
     printf("debug before make dics\n");
     make_disconnect(disc);
+    printf("debug after make dics\n");
 
     pub->next = disc;
     conn->next = pub;
