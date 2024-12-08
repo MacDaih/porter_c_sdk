@@ -96,6 +96,8 @@ enum packet_type {
 };
 
 struct packet * new_packet();
+struct packet * new_from_payload(unsigned char * raw);
+
 void free_packet(struct packet * p);
 
 void encode_str(char * raw, struct packet * pkt);
