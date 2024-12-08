@@ -175,7 +175,6 @@ void write_fix_header(enum packet_type ptype, struct packet * pkt) {
 }
 
 uint8_t * write_properties(property props[], int prop_len, int * props_size) {
-    printf("debug before write propmalloc");
     uint8_t *enc = (uint8_t *) malloc(sizeof(uint8_t));
 
     int cursor = 0;
@@ -205,7 +204,6 @@ uint8_t * write_properties(property props[], int prop_len, int * props_size) {
         }
     }
 
-    printf("debug after write propmalloc");
     *props_size = cursor; 
     return enc;
 }
@@ -370,14 +368,14 @@ void free_packet(struct packet * p) {
 }
 
 struct packet * new_packet() {
-    printf("debug before write pkt malloc");
+    printf("debug before write pkt malloc\n");
     unsigned char * payload = (unsigned char*) malloc(1024);
     struct packet * p = (struct packet*) malloc(sizeof(struct packet));
 
     p->payload = payload;
     p->cursor = 0;
     return p;
-    printf("debug before write pkt malloc");
+    printf("debug before write pkt malloc\n");
 }
 
 struct packet * new_from_payload(unsigned char * raw) {

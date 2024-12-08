@@ -188,8 +188,6 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     struct packet * pub = init_publish(c, topic, format, payload);
 
     printf("debug before init dics\n");
-
-    printf("debug before make dics\n");
     struct packet * disc = init_disc(disc);
     printf("debug after make dics\n");
 
