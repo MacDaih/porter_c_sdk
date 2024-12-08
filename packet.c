@@ -368,7 +368,7 @@ void free_packet(struct packet * p) {
 }
 
 struct packet * new_packet() {
-    unsigned char * payload = (unsigned char*) malloc(sizeof(unsigned char));
+    unsigned char * payload = (unsigned char *)malloc(1024 * sizeof(unsigned char));;
 
     struct packet * p = (struct packet*) malloc(sizeof(struct packet));
 
