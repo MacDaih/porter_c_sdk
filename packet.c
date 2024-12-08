@@ -175,7 +175,7 @@ void write_fix_header(enum packet_type ptype, struct packet * pkt) {
 }
 
 uint8_t * write_properties(property props[], int prop_len, int * props_size) {
-    printf("debug before write propmalloc")
+    printf("debug before write propmalloc");
     uint8_t *enc = (uint8_t *) malloc(sizeof(uint8_t));
 
     int cursor = 0;
@@ -205,7 +205,7 @@ uint8_t * write_properties(property props[], int prop_len, int * props_size) {
         }
     }
 
-    printf("debug after write propmalloc")
+    printf("debug after write propmalloc");
     *props_size = cursor; 
     return enc;
 }
