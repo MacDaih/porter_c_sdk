@@ -1,6 +1,7 @@
 #ifndef PACKET_H_   /* Include guard */
 #define PACKET_H_
 
+#include <stddef.h>
 #include <stdint.h>
 //const unsigned char MQTT[6] = {0x00,0x04,0x4D,0x51,0x54,0x54};
 

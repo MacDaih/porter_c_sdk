@@ -187,13 +187,12 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     printf("debug before init pub\n");
     struct packet * pub = init_publish(c, topic, format, payload);
 
-    //printf("debug before init dics\n");
-    //unsigned char disc[4] = {0x0e, 0x01, 0x00, 0x00};
+    unsigned char disc[4] = {0x0e, 0x01, 0x00, 0x00};
     //
-    //struct packet * disconn = new_from_payload(disc);
+    struct packet * disconn = new_from_payload(disc);
     //printf("debug after make dics\n");
 
-    //pub->next = disconn;
+    pub->next = disconn;
     conn->next = pub;
 
     printf("debug before init send tcp\n");
@@ -202,7 +201,7 @@ int client_send(client * c, char * topic, char * format, char * payload) {
         return 1;
     }
 
-    free_list(conn);
+    //free_list(conn);
     return 0;
 }
 

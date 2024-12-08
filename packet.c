@@ -368,10 +368,8 @@ void free_packet(struct packet * p) {
 }
 
 struct packet * new_packet() {
-    printf("debug before write pkt payload malloc\n");
-    unsigned char * payload = (unsigned char*) malloc(1024);
+    unsigned char * payload = (unsigned char*) calloc(1024, sizeof(unsigned char));
 
-    printf("debug before write pkt malloc\n");
     struct packet * p = (struct packet*) malloc(sizeof(struct packet));
 
     p->payload = payload;
