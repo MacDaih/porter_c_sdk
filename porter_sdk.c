@@ -183,6 +183,7 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     pub->next = disc;
     conn->next = pub;
 
+    printf("debug before init send tcp\n");
     if(dial_start(c->addr, c->port, ctx, conn)) {
         printf("failed to dial to server %s\n", strerror(errno));    
         return 1;
