@@ -152,15 +152,17 @@ struct packet * init_publish(client * c,char * topic, char * format, char * payl
     return pub;
 }
 
-struct packet * init_disconnect() {
-
-}
-
 struct packet * init_subcribe(char * topics[]) {
     // TODO make properties
     struct packet * sub = new_packet();
     make_subscribe(sub, topics);
     return sub;
+}
+
+struct packet * init_disc() {
+    struct packet * disconn = new_packet();
+    make_disconnect(disconn);
+    return disconn;
 }
 
 int client_send(client * c, char * topic, char * format, char * payload) {
@@ -186,10 +188,9 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     struct packet * pub = init_publish(c, topic, format, payload);
 
     printf("debug before init dics\n");
-    struct packet * disc = new_packet();
 
     printf("debug before make dics\n");
-    make_disconnect(disc);
+    struct packet * disc = init_disc(disc);
     printf("debug after make dics\n");
 
     pub->next = disc;
