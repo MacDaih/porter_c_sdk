@@ -420,6 +420,6 @@ void free_list(struct packet * p) {
     while (p != NULL) {
         tmp = p;
         p = p->next;
-        free_packet(tmp);
+        free(tmp);
     }
 }
