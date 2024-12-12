@@ -293,7 +293,7 @@ void make_publish(
     rem_length += strlen(payload) + 2;
 
 
-    write_uint16(0, pkt);
+    // write_uint16(0, pkt);
     // topic name
     int prop_size = 0; 
     uint8_t * prop_buff = write_properties(props, 7, &prop_size);
