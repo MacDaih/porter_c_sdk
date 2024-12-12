@@ -407,7 +407,6 @@ int packet_callback(context ctx, unsigned char * payload, struct packet * receiv
             if(ctx.will_qos == QOS_ONE) // TODO handle puback depending on QoS
             return 0;
         case DISCONNECT_CMD:
-            printf("disconnecting\n");
             return 1;
         default:
             return 0;
