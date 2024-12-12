@@ -175,8 +175,8 @@ void write_fix_header(enum packet_type ptype, struct packet * pkt) {
 }
 
 uint8_t * write_properties(property props[], int prop_len, int * props_size) {
-    uint8_t *enc = (uint8_t *) malloc(sizeof(uint8_t));
-
+    
+    uint8_t enc[];
     int cursor = 0;
     for(int i = 0; i < prop_len; i++) {
         property prop = props[i];
@@ -205,7 +205,9 @@ uint8_t * write_properties(property props[], int prop_len, int * props_size) {
     }
 
     *props_size = cursor; 
-    return enc;
+    uint8_t *res = (uint8_t *) malloc(sizeof(enc) *sizeof(uint8_t));
+    res = enc;
+    return res;
 }
 
 void make_connect(context ctx, struct packet * pkt, property props[8]) {
@@ -375,7 +377,6 @@ struct packet * new_packet() {
     p->payload = payload;
     p->cursor = 0;
     return p;
-    printf("debug before write pkt malloc\n");
 }
 
 struct packet * new_from_payload(unsigned char * raw) {
