@@ -67,23 +67,8 @@ int init_client(client * c, int qos, uint16_t session_duration, uint16_t keep_al
 }
 
 
-struct packet * build_connect(client c) {
+struct packet * init_connect(context ctx) {
     struct packet * p = new_packet();
-
-    context ctx;
-    if(c.client_id) ctx.user_flag = 1;
-    if(c.client_pwd) ctx.pwd_flag = 1;
-    
-    ctx.will_qos = c.qos; 
-
-    ctx.will_retain = 0;
-    ctx.will_flag = 0;
-    ctx.clean_start = 0;
-
-    ctx.cid = c.client_id;
-    ctx.user = c.client;
-    ctx.pwd = c.client_pwd; 
-    ctx.keep_alive = c.keep_alive;
 
     property * conn_props = calloc(8, sizeof(property));
     if(ctx.user && ctx.pwd) {
@@ -93,10 +78,8 @@ struct packet * build_connect(client c) {
     make_connect(ctx,p, conn_props);
 
     free(conn_props);
-
     return p;
-}
-
+} 
 
 struct packet * init_publish(client * c,char * topic, char * format, char * payload) {
     struct packet * pub = new_packet();
@@ -153,7 +136,7 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     ctx.keep_alive = 10;
     //
     
-    struct packet * conn = build_connect(ctx);
+    struct packet * conn = init_connect(ctx);
 
     struct packet * pub = init_publish(c, topic, format, payload);
 
@@ -169,7 +152,7 @@ int client_send(client * c, char * topic, char * format, char * payload) {
         return 1;
     }
 
-    free_list(conn);
+    //free_list(conn);
     return 0;
 }
 
@@ -190,7 +173,7 @@ int client_recv(client * c, char * topics[]) {
     ctx.keep_alive = 10;
     //
 
-    struct packet * conn = build_connect(ctx);
+    struct packet * conn = init_connect(ctx);
     // TODO verify if client has already subscribed to topics from args
     // then add to message list
     struct packet * sub = init_subcribe(topics);
