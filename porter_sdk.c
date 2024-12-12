@@ -189,7 +189,7 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     //
     struct packet * disconn = new_from_payload(disc);
 
-    //pub->next = disconn;
+    pub->next = disconn;
     conn->next = pub;
 
     if(dial_start(c->addr, c->port, ctx, conn)) {
