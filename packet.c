@@ -175,38 +175,46 @@ void write_fix_header(enum packet_type ptype, struct packet * pkt) {
 }
 
 uint8_t * write_properties(property props[], int prop_len, int * props_size) {
-    
-    uint8_t enc[];
+
+    uint8_t *enc = (uint8_t *) malloc(256 *sizeof(uint8_t));
+
+    size_t final = 0;
     int cursor = 0;
     for(int i = 0; i < prop_len; i++) {
         property prop = props[i];
         if(prop.key == 0x00) break; 
         enc[cursor] = prop.key;
-        cursor++; 
+        cursor++;
+        final++;
         switch(prop.prop_type) {
             case VARINT:
                 encode_varint_buffer(prop.prop_value.uint32, enc, &cursor);
+                final += eval_bytes(prop.prop_value.uint32);
                 break;
             case UINT32:
                 write_uint32_buffer(prop.prop_value.varint, enc, &cursor);
+                final += 4;
                 break;
             case UINT16:
                 write_uint16_buffer(prop.prop_value.uint16, enc, &cursor);
+                final += 2;
                 break;
             case UINT8:
                 write_byte_buffer(prop.prop_value.byte, enc, &cursor);
+                final += 1;
                 break;
             case STRING:
                 encode_str_buffer(prop.prop_value.enc_str, enc, &cursor);
+                final += strlen(prop.prop_value.enc_str) + 2;
                 break;
             default:
                 break;
         }
     }
-
-    *props_size = cursor; 
-    uint8_t *res = (uint8_t *) malloc(sizeof(enc) *sizeof(uint8_t));
-    res = enc;
+    
+    uint8_t *res;
+    res = (uint8_t *) realloc(enc, final);
+    *props_size = cursor;
     return res;
 }
 
