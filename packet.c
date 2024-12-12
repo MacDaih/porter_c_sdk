@@ -305,7 +305,7 @@ void make_publish(
 
     encode_str(topic, pkt);
     // FIXME QoS 0 -> no packet id
-    write_uint16(0, pkt);
+    // write_uint16(0, pkt);
 
     // properties
     // property length
