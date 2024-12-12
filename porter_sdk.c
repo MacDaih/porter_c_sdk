@@ -97,36 +97,8 @@ struct packet * build_connect(client c) {
     return p;
 }
 
-struct packet * init_connect(context ctx) {
-    struct packet * p = new_packet();
-
-    property * conn_props = calloc(8, sizeof(property));
-    if(ctx.user && ctx.pwd) {
-        property auth = {.key = 0x15, .prop_value.enc_str = "Password", .prop_type = STRING};
-        conn_props[0] = auth; 
-    }
-    make_connect(ctx,p, conn_props);
-
-    free(conn_props);
-    return p;
-} 
 
 struct packet * init_publish(client * c,char * topic, char * format, char * payload) {
-    // TODO create method for context init
-    context ctx;
-    ctx.user_flag = 1;
-    ctx.pwd_flag = 1;
-    ctx.will_retain = 0;
-    ctx.will_qos = 0;
-    ctx.will_flag = 0;
-    ctx.clean_start = 0;
-
-    ctx.cid = c->client_id;
-    ctx.user = c->client;
-    ctx.pwd = c->client_pwd; 
-    ctx.keep_alive = 10;
-    //
-    
     struct packet * pub = new_packet();
     // make properties
     property * props = calloc(7,sizeof(property));
@@ -181,7 +153,7 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     ctx.keep_alive = 10;
     //
     
-    struct packet * conn = init_connect(ctx);
+    struct packet * conn = build_connect(ctx);
 
     struct packet * pub = init_publish(c, topic, format, payload);
 
@@ -218,7 +190,7 @@ int client_recv(client * c, char * topics[]) {
     ctx.keep_alive = 10;
     //
 
-    struct packet * conn = init_connect(ctx);
+    struct packet * conn = build_connect(ctx);
     // TODO verify if client has already subscribed to topics from args
     // then add to message list
     struct packet * sub = init_subcribe(topics);
