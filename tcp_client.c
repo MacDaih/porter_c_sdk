@@ -96,7 +96,7 @@ int dial_start(
         cursor = cursor->next;
         bzero(buff, sizeof(buff));
     }
-    
+    free_list(p); 
     close(sockfd);
     return 0;
 }
