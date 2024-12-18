@@ -62,13 +62,7 @@ int dial_start(
               close(sockfd);
               return 1;
           }
-
-          if(packet_callback(ctx, buff, np)) {
-              close(sockfd);
-              return 0; 
-          }
         } else {
-            struct packet * disc = new_packet();
             struct packet * ping = new_packet();
             make_ping(ping);
 
@@ -80,13 +74,13 @@ int dial_start(
               close(sockfd);
               return 1;
             }
+        }  
 
-            if(packet_callback(ctx, buff, np)) {
-                close(sockfd);
-                return 0; 
-            }
+        if(packet_callback(ctx, buff, np)) {
+            close(sockfd);
+            return 0; 
         }
-        
+
         // append to packet list
         if(np != NULL) {
             np->next = cursor->next;
