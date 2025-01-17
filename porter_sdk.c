@@ -133,7 +133,7 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     ctx.cid = c->client_id;
     ctx.user = c->client;
     ctx.pwd = c->client_pwd; 
-    ctx.keep_alive = 10;
+    ctx.keep_alive = c->keep_alive;
     //
     
     struct packet * conn = init_connect(ctx);
@@ -169,7 +169,7 @@ int client_recv(client * c, char * topics[]) {
     ctx.cid = c->client_id;
     ctx.user = c->client;
     ctx.pwd = c->client_pwd; 
-    ctx.keep_alive = 10;
+    ctx.keep_alive = c->keep_alive;
     //
 
     struct packet * conn = init_connect(ctx);
