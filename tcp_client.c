@@ -27,7 +27,6 @@ int dial_start(
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) {
-        free_list(p);
         return 1;
     }
     printf("socket open\n");
@@ -41,7 +40,6 @@ int dial_start(
     if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr))
         != 0) {
         printf("failed to connect to server %s\n", strerror(errno));    
-        free_list(p); 
         return 1;
     }
 
@@ -57,7 +55,6 @@ int dial_start(
         int m_res = write(sockfd, cursor->payload, cursor->len);
         if(m_res < 0) {
             printf("failed to write to server %s\n", strerror(errno));    
-            free_list(p); 
             close(sockfd);
             return 1; 
         }
@@ -73,7 +70,6 @@ int dial_start(
          
           if(r_res < 0) {
               printf("failed read %s\n", strerror(errno));    
-              free_list(p); 
               close(sockfd);
               return 1;
           }
@@ -89,7 +85,6 @@ int dial_start(
             int r_res = read(sockfd, buff, sizeof(buff));
             if(r_res < 0) {
               printf("failed read ping %s\n", strerror(errno));    
-              free_list(p); 
               close(sockfd);
               return 1;
             }
@@ -98,7 +93,6 @@ int dial_start(
 
         if(packet_callback(ctx, buff, np)) {
             printf("returning after exit\n");
-            free_list(p); 
             close(sockfd);
             return 0; 
         }
@@ -112,7 +106,6 @@ next:
         cursor = cursor->next;
         bzero(buff, sizeof(buff));
     }
-    free_list(p); 
     close(sockfd);
     return 0;
 }

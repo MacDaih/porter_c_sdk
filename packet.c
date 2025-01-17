@@ -416,9 +416,8 @@ int packet_callback(context ctx, unsigned char * payload, struct packet * receiv
 
 
 void free_list(struct packet * p) {
-    struct packet * tmp = NULL;
     while (p != NULL) {
-        tmp = p;
+        struct packet * tmp = p;
         p = p->next;
         free(tmp);
     }
