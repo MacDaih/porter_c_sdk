@@ -89,7 +89,7 @@ int dial_start(
             int r_res = read(sockfd, buff, sizeof(buff));
             if(r_res < 0) {
               printf("failed read ping %s\n", strerror(errno));    
-              free_list(ping); 
+              free_list(p); 
               close(sockfd);
               return 1;
             }
