@@ -102,8 +102,10 @@ next:
             cursor->next = np;
         }
 
+        struct packet * tmp = cursor;
         cursor = cursor->next;
         bzero(buff, sizeof(buff));
+        free(tmp);
     }
     close(sockfd);
     return 0;

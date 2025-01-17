@@ -152,7 +152,8 @@ int client_send(client * c, char * topic, char * format, char * payload) {
         return 1;
     }
     
-    //free_list(conn);
+    printf("done sending message\n");
+
     return 0;
 }
 
@@ -185,6 +186,5 @@ int client_recv(client * c, char * topics[]) {
         return 1;
     }
 
-    free_list(conn);
     return 0;
 }
