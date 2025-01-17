@@ -419,7 +419,6 @@ void free_list(struct packet * p) {
     while (p != NULL) {
         struct packet * tmp = p;
         p = p->next;
-        free(tmp->payload);
         free(tmp);
     }
 }

@@ -152,7 +152,7 @@ int client_send(client * c, char * topic, char * format, char * payload) {
         return 1;
     }
     
-    free_list(conn);
+    //free_list(conn);
     return 0;
 }
 
