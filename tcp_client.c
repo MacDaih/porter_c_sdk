@@ -27,9 +27,10 @@ int dial_start(
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) {
+        free_list(p);
         return 1;
     }
-
+    printf("socket open\n");
 
     bzero((char *) &servaddr, sizeof(servaddr));
 
@@ -39,8 +40,12 @@ int dial_start(
 
     if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr))
         != 0) {
+        printf("failed to connect to server %s\n", strerror(errno));    
+        free_list(p); 
         return 1;
     }
+
+    printf("connection open\n");
 
     unsigned char buff[MAX];
 
@@ -57,11 +62,17 @@ int dial_start(
             return 1; 
         }
     
+        printf("wrote to socket\n");
+
         struct packet * np = NULL;
         if(ctx.keep_alive == 0) goto next;
         if(poll(&fd, 1, (int)(ctx.keep_alive * 1000)) > 0) {
           int r_res = read(sockfd,buff,sizeof(buff));
+
+          printf("read socket\n");
+         
           if(r_res < 0) {
+              printf("failed read %s\n", strerror(errno));    
               free_list(p); 
               close(sockfd);
               return 1;
@@ -73,15 +84,20 @@ int dial_start(
             bzero(buff, sizeof(buff));
             int pres = write(sockfd, ping->payload, ping->len);
 
+            free(ping);
+            printf("write socket\n");
             int r_res = read(sockfd, buff, sizeof(buff));
             if(r_res < 0) {
-              free_list(p); 
+              printf("failed read ping %s\n", strerror(errno));    
+              free_list(ping); 
               close(sockfd);
               return 1;
             }
+
         }  
 
         if(packet_callback(ctx, buff, np)) {
+            free_list(p); 
             close(sockfd);
             return 0; 
         }
