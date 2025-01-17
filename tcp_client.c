@@ -29,7 +29,6 @@ int dial_start(
     if (sockfd == -1) {
         return 1;
     }
-    printf("socket open\n");
 
     bzero((char *) &servaddr, sizeof(servaddr));
 
@@ -42,8 +41,6 @@ int dial_start(
         printf("failed to connect to server %s\n", strerror(errno));    
         return 1;
     }
-
-    printf("connection open\n");
 
     unsigned char buff[MAX];
 
@@ -59,7 +56,6 @@ int dial_start(
             return 1; 
         }
     
-        printf("wrote to socket\n");
 
         struct packet * np = NULL;
         if(ctx.keep_alive == 0) goto next;
@@ -69,7 +65,6 @@ int dial_start(
           printf("read socket\n");
          
           if(r_res < 0) {
-              printf("failed read %s\n", strerror(errno));    
               close(sockfd);
               return 1;
           }
@@ -84,7 +79,6 @@ int dial_start(
             printf("write socket\n");
             int r_res = read(sockfd, buff, sizeof(buff));
             if(r_res < 0) {
-              printf("failed read ping %s\n", strerror(errno));    
               close(sockfd);
               return 1;
             }
