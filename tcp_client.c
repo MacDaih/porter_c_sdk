@@ -55,10 +55,12 @@ int dial_start(
             return 1; 
         }
     
-        struct packet * np = NULL; 
+        struct packet * np = NULL;
+        if(ctx.keep_alive == 0) goto next;
         if(poll(&fd, 1, (int)(ctx.keep_alive * 1000)) > 0) {
           int r_res = read(sockfd,buff,sizeof(buff));
           if(r_res < 0) {
+              free_list(p); 
               close(sockfd);
               return 1;
           }
@@ -71,6 +73,7 @@ int dial_start(
 
             int r_res = read(sockfd, buff, sizeof(buff));
             if(r_res < 0) {
+              free_list(p); 
               close(sockfd);
               return 1;
             }
@@ -80,7 +83,7 @@ int dial_start(
             close(sockfd);
             return 0; 
         }
-
+next:
         // append to packet list
         if(np != NULL) {
             np->next = cursor->next;
