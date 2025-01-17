@@ -97,6 +97,7 @@ int dial_start(
         }  
 
         if(packet_callback(ctx, buff, np)) {
+            printf("returning after exit\n");
             free_list(p); 
             close(sockfd);
             return 0; 
