@@ -51,6 +51,8 @@ int dial_start(
     while(cursor) {
         int m_res = write(sockfd, cursor->payload, cursor->len);
         if(m_res < 0) {
+            printf("failed to write to server %s\n", strerror(errno));    
+            free_list(p); 
             close(sockfd);
             return 1; 
         }
