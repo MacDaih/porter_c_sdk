@@ -79,6 +79,8 @@ int dial_start(
             printf("write socket\n");
             int r_res = read(sockfd, buff, sizeof(buff));
             if(r_res < 0) {
+
+            printf("couldnt read socket fd\n");
               close(sockfd);
               return 1;
             }
