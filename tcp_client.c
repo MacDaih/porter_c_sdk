@@ -94,7 +94,7 @@ int dial_start(
 
         struct packet * tmp = cursor;
         cursor = cursor->next;
-        printf("%d\n", sizeof(buff));
+        printf("packet sent 0x%x\n", tmp->payload[0]);
         bzero(buff, sizeof(buff));
 
         free(tmp);
