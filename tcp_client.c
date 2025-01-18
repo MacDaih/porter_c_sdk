@@ -62,7 +62,6 @@ int dial_start(
         if(poll(&fd, 1, (int)(ctx.keep_alive * 1000)) > 0) {
           int r_res = read(sockfd,buff,sizeof(buff));
 
-          printf("read socket\n");
          
           if(r_res < 0) {
               close(sockfd);
@@ -76,11 +75,9 @@ int dial_start(
             int pres = write(sockfd, ping->payload, ping->len);
 
             free(ping);
-            printf("write socket\n");
             int r_res = read(sockfd, buff, sizeof(buff));
             if(r_res < 0) {
 
-            printf("couldnt read socket fd\n");
               close(sockfd);
               return 1;
             }
@@ -101,6 +98,8 @@ next:
         struct packet * tmp = cursor;
         cursor = cursor->next;
         bzero(buff, sizeof(buff));
+
+        printf("before free\n");
         free(tmp);
     }
     close(sockfd);
