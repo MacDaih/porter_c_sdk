@@ -55,7 +55,7 @@ int dial_start(
             close(sockfd);
             return 1; 
         }
-    
+         
 
         struct packet * np = NULL;
         if(poll(&fd, 1, (int)(ctx.keep_alive * 1000)) > 0) {
@@ -94,6 +94,7 @@ int dial_start(
 
         struct packet * tmp = cursor;
         cursor = cursor->next;
+        printf("%d\n", sizeof(buff));
         bzero(buff, sizeof(buff));
 
         free(tmp);
