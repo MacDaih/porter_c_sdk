@@ -58,7 +58,6 @@ int dial_start(
     
 
         struct packet * np = NULL;
-        if(ctx.keep_alive == 0) goto next;
         if(poll(&fd, 1, (int)(ctx.keep_alive * 1000)) > 0) {
           int r_res = read(sockfd,buff,sizeof(buff));
 
@@ -88,7 +87,7 @@ int dial_start(
             close(sockfd);
             return 0; 
         }
-next:
+
         // append to packet list
         if(np != NULL) {
             np->next = cursor->next;
