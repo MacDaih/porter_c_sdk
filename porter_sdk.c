@@ -152,8 +152,6 @@ int client_send(client * c, char * topic, char * format, char * payload) {
         return 1;
     }
     
-    printf("done sending message\n");
-
     return 0;
 }
 
