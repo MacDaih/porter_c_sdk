@@ -98,6 +98,7 @@ int dial_start(
         bzero(buff, sizeof(buff));
 
         free(tmp);
+        printf("packet freed\n");
     }
     close(sockfd);
     return 0;
