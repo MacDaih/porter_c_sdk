@@ -39,6 +39,7 @@ int dial_start(
     if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr))
         != 0) {
         printf("failed to connect to server %s\n", strerror(errno));    
+        close(sockfd);
         return 1;
     }
 
@@ -52,6 +53,7 @@ int dial_start(
         int m_res = write(sockfd, cursor->payload, cursor->len);
         if(m_res < 0) {
             printf("failed to write to server %s\n", strerror(errno));    
+            close(fd);
             close(sockfd);
             return 1; 
         }
@@ -61,7 +63,9 @@ int dial_start(
         if(poll(&fd, 1, (int)(ctx.keep_alive * 1000)) > 0) {
           int r_res = read(sockfd,buff,sizeof(buff));
           if(r_res < 0) {
+              close(fd);
               close(sockfd);
+
               return 1;
           }
         } else {
@@ -74,7 +78,7 @@ int dial_start(
             free(ping);
             int r_res = read(sockfd, buff, sizeof(buff));
             if(r_res < 0) {
-
+              close(fd);
               close(sockfd);
               return 1;
             }
@@ -82,6 +86,7 @@ int dial_start(
         }  
 
         if(packet_callback(ctx, buff, np)) {
+            close(fd);
             close(sockfd);
             return 0; 
         }
@@ -94,12 +99,12 @@ int dial_start(
 
         struct packet * tmp = cursor;
         cursor = cursor->next;
-        printf("packet sent 0x%x\n", tmp->payload[0]);
         bzero(buff, sizeof(buff));
 
         free(tmp);
-        printf("packet freed\n");
     }
+
+    close(fd);
     close(sockfd);
     return 0;
 }
