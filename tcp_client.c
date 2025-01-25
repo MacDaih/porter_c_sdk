@@ -57,7 +57,6 @@ int dial_start(
             return 1; 
         }
          
-
         struct packet * np = NULL;
         if(poll(&fd, 1, (int)(ctx.keep_alive * 1000)) > 0) {
           int r_res = read(sockfd,buff,sizeof(buff));
@@ -65,7 +64,7 @@ int dial_start(
               close(sockfd);
               return 1;
           }
-        } else {
+        } else if (ctx.keep_alive > 0) {
             struct packet * ping = new_packet();
             make_ping(ping);
 
@@ -82,7 +81,6 @@ int dial_start(
               close(sockfd);
               return 1;
             }
-
         }  
 
         if(packet_callback(ctx, buff, np)) {
