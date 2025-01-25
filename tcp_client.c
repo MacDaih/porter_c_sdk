@@ -91,6 +91,7 @@ int dial_start(
 
         // append to packet list
         if(np != NULL) {
+            printf("NOT NULL ?!\n");
             np->next = cursor->next;
             cursor->next = np;
         }
@@ -100,6 +101,7 @@ int dial_start(
         bzero(buff, sizeof(buff));
 
         printf("freeing packet %x\n",tmp->payload[0]);
+        free(tmp->payload);
         free(tmp);
         printf("freed packet\n");
     }
