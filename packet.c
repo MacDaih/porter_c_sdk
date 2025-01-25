@@ -384,6 +384,8 @@ struct packet * new_packet() {
 
     p->payload = payload;
     p->cursor = 0;
+    p->next = NULL;
+
     return p;
 }
 
