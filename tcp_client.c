@@ -99,9 +99,11 @@ int dial_start(
         struct packet * tmp = cursor;
         cursor = cursor->next;
         bzero(buff, sizeof(buff));
+        
 
-        printf("freeing packet %x\n",tmp->payload[0]);
+        printf("freeing packet payload\n");
         free(tmp->payload);
+        printf("freeing packet %x\n",tmp->payload[0]);
         free(tmp);
         printf("freed packet\n");
     }
