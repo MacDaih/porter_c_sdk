@@ -388,11 +388,8 @@ struct packet * new_packet() {
 }
 
 struct packet * new_from_payload(unsigned char * raw) {
-    // TODO  make sure of payload vs raw boundaries
-    unsigned char * payload = (unsigned char *)malloc(1024 * sizeof(unsigned char));;
     struct packet * p = (struct packet*) malloc(sizeof(struct packet));
-    payload = raw;
-    p->payload = payload;
+    p->payload = raw;
     p->cursor = 0;
     return p;
 }
