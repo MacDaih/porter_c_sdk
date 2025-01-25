@@ -141,8 +141,8 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     struct packet * pub = init_publish(c, topic, format, payload);
 
     unsigned char disc[4] = {0x0e, 0x01, 0x00, 0x00};
-    //
     struct packet * disconn = new_from_payload(disc);
+    printf("disconnect packet debug : 0x%2x\n", disconn->payload[0]);
 
     pub->next = disconn;
     conn->next = pub;
