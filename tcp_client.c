@@ -98,7 +98,9 @@ int dial_start(
         cursor = cursor->next;
         bzero(buff, sizeof(buff));
 
+        printf("freeing packet %x\n",tmp->payload[0]);
         free(tmp);
+        printf("freed packet\n");
     }
 
     close(sockfd);
