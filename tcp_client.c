@@ -90,6 +90,7 @@ int dial_start(
 
         // append to packet list
         if(np != NULL) {
+            printf("getting here?!\n");
             np->next = cursor->next;
             cursor->next = np;
         }
