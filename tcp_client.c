@@ -101,9 +101,9 @@ int dial_start(
         bzero(buff, sizeof(buff));
         
 
-        printf("freeing packet payload\n");
+        printf("0x%2x : freeing packet payload\n", tmp->payload[0]);
         free(tmp->payload);
-        printf("freeing packet %x\n",tmp->payload[0]);
+        printf("freeing packet\n");
         free(tmp);
         printf("freed packet\n");
     }
