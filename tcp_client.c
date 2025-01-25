@@ -50,6 +50,7 @@ int dial_start(
     fd.events = POLLIN;
 
     while(cursor) {
+        printf("cursor packet %x\n",cursor->payload[0]);
         int m_res = write(sockfd, cursor->payload, cursor->len);
         if(m_res < 0) {
             printf("failed to write to server %s\n", strerror(errno));    
@@ -90,7 +91,6 @@ int dial_start(
 
         // append to packet list
         if(np != NULL) {
-            printf("getting here?!\n");
             np->next = cursor->next;
             cursor->next = np;
         }
