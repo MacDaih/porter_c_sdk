@@ -88,7 +88,7 @@ int dial_start(
 
         int cres = packet_callback(ctx, buff, np);
         if(cres > 0) {
-            code = cres;
+            code = 0;
             break;
         }
 
