@@ -27,6 +27,7 @@ int dial_start(
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) {
+        printf("failed to init socket %s\n", strerror(errno));    
         return 1;
     }
 
