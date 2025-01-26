@@ -64,7 +64,15 @@ int dial_start(
         if(poll(&fd, 1, (int)(ctx.keep_alive * 1000)) > 0) {
             
           // Skip to next message when no response is expected
-          if(cursor->payload[0] == 0x30 && ctx.qos == 0) goto next;
+          if(cursor->payload[0] == 0x30 && ctx.qos == 0) {
+            struct packet * tmp = cursor;
+            cursor = cursor->next;
+            bzero(buff, sizeof(buff));
+        
+            free(tmp->payload);
+            free(tmp);
+            continue;
+          }
 
           int r_res = read(sockfd,buff,sizeof(buff));
           if(r_res < 0) {
@@ -104,7 +112,6 @@ int dial_start(
             cursor->next = np;
         }
 
-next:
         struct packet * tmp = cursor;
         cursor = cursor->next;
         bzero(buff, sizeof(buff));
