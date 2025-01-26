@@ -400,6 +400,7 @@ struct packet * new_from_payload(unsigned char * raw) {
 int packet_callback(context ctx, unsigned char * payload, struct packet * receiver) {
     unsigned char cmd = payload[0];
 
+    printf("received %x\n", cmd);
     switch(cmd) {
         case CONNECT_CMD:
             return 0;
@@ -409,10 +410,9 @@ int packet_callback(context ctx, unsigned char * payload, struct packet * receiv
             if(ctx.will_qos == QOS_ONE) // TODO handle puback depending on QoS
             return 0;
         case DISCONNECT_CMD:
-            printf("received disconnect packet\n");
             return 1;
         default:
-            return 0;
+            return 1;
     }
     return 0;
 }

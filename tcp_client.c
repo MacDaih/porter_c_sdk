@@ -59,7 +59,7 @@ int dial_start(
          
         struct packet * np = NULL;
         if(poll(&fd, 1, (int)(ctx.keep_alive * 1000)) > 0) {
-          int r_res = read(sockfd,buff,sizeof(buff));
+          int r_res = recv(sockfd,buff,sizeof(buff), 0);
           if(r_res < 0) {
               code = 1;
               break;
@@ -76,8 +76,9 @@ int dial_start(
             }
 
             free(ping);
-            int r_res = read(sockfd, buff, sizeof(buff));
+            int r_res = recv(sockfd, buff, sizeof(buff), 0);
             if(r_res < 0) {
+                printf("failed to read ping response from server %s\n", strerror(errno));    
                 code = 1;
                 break;
             }
