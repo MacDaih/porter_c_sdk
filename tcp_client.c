@@ -50,9 +50,9 @@ int dial_start(
 
     int code = 0;
     while(cursor) {
-        printf("cursor packet %x\n",cursor->payload[0]);
         int m_res = write(sockfd, cursor->payload, cursor->len);
         if(m_res < 0) {
+            printf("failed to write to server %s\n", strerror(errno));    
             code = 1;
             break;
         }
@@ -61,6 +61,7 @@ int dial_start(
         if(poll(&fd, 1, (int)(ctx.keep_alive * 1000)) > 0) {
           int r_res = recv(sockfd,buff,sizeof(buff), 0);
           if(r_res < 0) {
+              printf("failed to read from server %s\n", strerror(errno));    
               code = 1;
               break;
           }
