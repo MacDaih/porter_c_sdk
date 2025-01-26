@@ -413,7 +413,7 @@ int packet_callback(context ctx, unsigned char * payload, struct packet * receiv
         case DISCONNECT_CMD:
             return 1;
         default:
-            return 1;
+            return 0;
     }
     return 0;
 }
