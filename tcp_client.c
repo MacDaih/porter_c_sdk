@@ -58,9 +58,15 @@ int dial_start(
             code = 1;
             break;
         }
-         
+        
+
         struct packet * np = NULL;
         if(poll(&fd, 1, (int)(ctx.keep_alive * 1000)) > 0) {
+            
+          // Skip to next message when no response is expected
+          if(cursor->payload[0] == 0x30 && ctx.qos == 0)
+            continue;
+
           int r_res = read(sockfd,buff,sizeof(buff));
           if(r_res < 0) {
               printf("failed to read from server %s\n", strerror(errno));    

@@ -54,6 +54,8 @@ struct {
     char *user;
     char *pwd;
     char *cid;
+
+    uint8_t qos;
 } typedef context;
 
 union {
