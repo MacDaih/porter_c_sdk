@@ -22,7 +22,7 @@ int dial_start(
 ) {
     struct packet * cursor = p;
     
-    int sockfd, connfd;
+    int sockfd;
     struct sockaddr_in servaddr, cli;
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -39,7 +39,6 @@ int dial_start(
     if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr))
         != 0) {
         printf("failed to connect to server %s\n", strerror(errno));    
-        close(sockfd);
         return 1;
     }
 
@@ -49,21 +48,21 @@ int dial_start(
     fd.fd = sockfd;
     fd.events = POLLIN;
 
+    int code = 0;
     while(cursor) {
         printf("cursor packet %x\n",cursor->payload[0]);
         int m_res = write(sockfd, cursor->payload, cursor->len);
         if(m_res < 0) {
-            printf("failed to write to server %s\n", strerror(errno));    
-            close(sockfd);
-            return 1; 
+            code = 1;
+            break;
         }
          
         struct packet * np = NULL;
         if(poll(&fd, 1, (int)(ctx.keep_alive * 1000)) > 0) {
           int r_res = read(sockfd,buff,sizeof(buff));
           if(r_res < 0) {
-              close(sockfd);
-              return 1;
+              code = 1;
+              break;
           }
         } else if (ctx.keep_alive > 0) {
             struct packet * ping = new_packet();
@@ -72,26 +71,26 @@ int dial_start(
             bzero(buff, sizeof(buff));
             if(write(sockfd, ping->payload, ping->len)) {
                 printf("failed to write ping to server %s\n", strerror(errno));    
-                close(sockfd);
-                return 1; 
+                code = 1;
+                break;
             }
 
             free(ping);
             int r_res = read(sockfd, buff, sizeof(buff));
             if(r_res < 0) {
-              close(sockfd);
-              return 1;
+                code = 1;
+                break;
             }
         }  
 
-        if(packet_callback(ctx, buff, np)) {
-            close(sockfd);
-            return 0; 
+        int cres = packet_callback(ctx, buff, np) 
+        if(cres > 0) {
+            code = cres;
+            break;
         }
 
         // append to packet list
         if(np != NULL) {
-            printf("NOT NULL ?!\n");
             np->next = cursor->next;
             cursor->next = np;
         }
@@ -101,13 +100,10 @@ int dial_start(
         bzero(buff, sizeof(buff));
         
 
-        printf("0x%2x : freeing packet payload\n", tmp->payload[0]);
         free(tmp->payload);
-        printf("freeing packet\n");
         free(tmp);
-        printf("freed packet\n");
     }
 
     close(sockfd);
-    return 0;
+    return code;
 }
