@@ -370,6 +370,7 @@ void make_disconnect(struct packet * pkt) {
     encode_varint(0, pkt);
 
     write_remaining_len(pkt);
+    pkt->cursor = 0;
 }
 
 void free_packet(struct packet * p) {
