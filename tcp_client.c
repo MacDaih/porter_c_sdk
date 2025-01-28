@@ -102,6 +102,8 @@ int dial_start(
               code = 1;
               break;
           }
+
+          printf("debug no ping read %d", r_res);
         } 
 
         int cres = packet_callback(ctx, buff, np);
