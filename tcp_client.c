@@ -39,6 +39,7 @@ int dial_start(
     if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr))
         != 0) {
         printf("failed to connect to server %s\n", strerror(errno));    
+        close(sockfd);
         return 1;
     }
 
