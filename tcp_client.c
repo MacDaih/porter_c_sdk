@@ -15,7 +15,7 @@
 #define MAX 1024
 
 int dial_start(
-        int socket,
+        int sockfd,
         char * addr,
         int port,
         context ctx,
