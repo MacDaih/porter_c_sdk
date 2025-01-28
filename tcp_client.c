@@ -62,7 +62,7 @@ int dial_start(
             break;
         }
         
-        if(ctx.qos == 0 && cursor->payload[0] == 0x30) {
+        if(ctx.qos == QOS_ZERO && cursor->payload[0] == 0x30) {
             printf("skip\n");
             cursor = cursor->next;
             bzero(buff, sizeof(buff));
