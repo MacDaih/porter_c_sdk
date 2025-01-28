@@ -95,8 +95,9 @@ int dial_start(
                 break;
             }
         } else {
-            printf("weird!!!");
-            break;
+            printf("failed to poll response from server %s\n", strerror(errno));    
+            close(sockfd);
+            return 1;
         } 
 
         int cres = packet_callback(ctx, buff, np);
