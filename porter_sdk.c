@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#include <sys/socket.h>
-
+#include <unistd.h>
 
 #include "porter_sdk.h"
 #include "packet.h"
