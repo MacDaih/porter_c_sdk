@@ -61,7 +61,7 @@ int init_client(client * c, int qos, uint16_t session_duration, uint16_t keep_al
     //TODO check keep_alive < session_duration
     c->keep_alive = keep_alive;
     c->session_duration = session_duration;
-    c->qos = parse_qos(qos);
+    c->qos = 0;
 
     return 0;
 }
