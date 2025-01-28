@@ -63,7 +63,7 @@ int dial_start(
         }
         
         printf("after send %d : 0x%2x\n", ctx.qos, cursor->payload[0]);
-        if(ctx.qos == QOS_ZERO && cursor->payload[0] == 0x30) {
+        if(cursor->payload[0] == 0x30) {
             cursor = cursor->next;
             bzero(buff, sizeof(buff));
             continue;
