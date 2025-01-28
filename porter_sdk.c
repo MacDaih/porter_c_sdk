@@ -145,11 +145,14 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     pub->next = disconn;
     conn->next = pub;
 
-    if(dial_start(c->addr, c->port, ctx, conn)) {
+    int socketfd;
+    if(dial_start(socketfd, c->addr, c->port, ctx, conn)) {
         printf("failed to dial to server %s\n", strerror(errno));    
+        close(socketfd);
         return 1;
     }
    
+    close(socketfd);
     free_list(conn);
     return 0;
 }
@@ -177,11 +180,14 @@ int client_recv(client * c, char * topics[]) {
     struct packet * sub = init_subcribe(topics);
     conn->next = sub;
 
+    int socketfd;
     // TODO solve delayed disconnect
-    if(dial_start(c->addr, c->port, ctx, conn)) {
+    if(dial_start(socketfd,c->addr, c->port, ctx, conn)) {
         printf("failed to dial to server %s\n", strerror(errno));    
         return 1;
     }
 
+    close(socketfd);
+    free_list(conn);
     return 0;
 }

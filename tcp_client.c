@@ -15,6 +15,7 @@
 #define MAX 1024
 
 int dial_start(
+        int socket,
         char * addr,
         int port,
         context ctx,
@@ -24,7 +25,7 @@ int dial_start(
     
     struct sockaddr_in servaddr, cli;
 
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) {
         printf("failed to init socket %s\n", strerror(errno));    
         return 1;
@@ -39,7 +40,6 @@ int dial_start(
     if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr))
         != 0) {
         printf("failed to connect to server %s\n", strerror(errno));    
-        close(sockfd);
         return 1;
     }
 
@@ -116,6 +116,5 @@ int dial_start(
         bzero(buff, sizeof(buff));
     }
 
-    close(sockfd);
     return code;
 }
