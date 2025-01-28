@@ -47,11 +47,12 @@ int dial_start(
 
     int code = 0;
 
-    struct timeval tv;
-    tv.tv_sec = ctx.keep_alive;
-    tv.tv_usec = 0;
-    setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
-
+    if(ctx.keep_alive) {
+        struct timeval tv;
+        tv.tv_sec = ctx.keep_alive;
+        tv.tv_usec = 0;
+        setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
+    }
     while(cursor) {
         printf("sending 0x%2x, len -> %d\n", cursor->payload[0], cursor->len);
         int m_res = send(sockfd, cursor->payload, cursor->len, 0);
@@ -60,7 +61,13 @@ int dial_start(
             code = 1;
             break;
         }
-           
+        
+        if(ctx.qos == 0 && cursor->payload[0] == 0x30) {
+            cursor = cursor->next;
+            bzero(buff, sizeof(buff));
+            continue;
+        }
+
         // refactor
         struct packet * np = NULL;
     
