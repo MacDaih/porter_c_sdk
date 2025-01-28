@@ -50,62 +50,52 @@ int dial_start(
     fd.events = POLLIN;
 
     int code = 0;
+
+    struct timeval tv;
+    tv.tv_sec = ctx.keep_alive;
+    tv.tv_usec = 0;
+    setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
+
     while(cursor) {
         printf("sending 0x%2x, len -> %d\n", cursor->payload[0], cursor->len);
-        int m_res = write(sockfd, cursor->payload, cursor->len);
+        int m_res = send(sockfd, cursor->payload, cursor->len, 0);
         if(m_res < 0) {
             printf("failed to write to server %s\n", strerror(errno));    
             code = 1;
             break;
         }
-        
+           
         // refactor
         struct packet * np = NULL;
-        if(ctx.keep_alive > 0) {
-            int pres = poll(&fd, 1, (int)(ctx.keep_alive * 1000));
-            if(pres < 0) {
-                printf("failed to poll response from server %s\n", strerror(errno));    
-                close(sockfd);
-                return 1;
-            }
+    
+         int r_res = recv(sockfd,buff,sizeof(buff),0);
+         if(r_res < 0) {
+            if(errno == EWOULDBLOCK) {
+                struct packet * ping = new_packet();
+                make_ping(ping);
 
-             if(pres == 0) {
-                    struct packet * ping = new_packet();
-                    make_ping(ping);
+                bzero(buff, sizeof(buff));
+                if(write(sockfd, ping->payload, ping->len)) {
+                    printf("failed to write ping to server %s\n", strerror(errno));    
+                    code = 1;
+                    break;
+                }
 
-                    bzero(buff, sizeof(buff));
-                    if(write(sockfd, ping->payload, ping->len)) {
-                        printf("failed to write ping to server %s\n", strerror(errno));    
-                        code = 1;
-                        break;
-                    }
-
-                    free(ping);
-                    int r_res = read(sockfd, buff, sizeof(buff));
-                    if(r_res < 0) {
-                        printf("failed to read ping response from server %s\n", strerror(errno));    
-                        code = 1;
-                        break;
-                    }
-             }
-
-             int r_res = read(sockfd,buff,sizeof(buff));
-             if(r_res < 0) {
+                free(ping);
+                int r_res = read(sockfd, buff, sizeof(buff));
+                if(r_res < 0) {
+                    printf("failed to read ping response from server %s\n", strerror(errno));    
+                    code = 1;
+                    break;
+                }
+            } else {
                 printf("failed to read from server %s\n", strerror(errno));    
                 code = 1;
                 break;
-             }   
-        } else {
-          int r_res = read(sockfd,buff,sizeof(buff));
-          if(r_res < 0) {
-              printf("failed to read from server %s\n", strerror(errno));    
-              code = 1;
-              break;
-          }
+            }
+         }   
 
-          printf("debug no ping read %d", r_res);
-        } 
-
+         
         int cres = packet_callback(ctx, buff, np);
         if(cres > 0) {
             code = cres;
