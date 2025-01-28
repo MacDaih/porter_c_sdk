@@ -22,10 +22,9 @@ int dial_start(
 ) {
     struct packet * cursor = p;
     
-    int sockfd;
     struct sockaddr_in servaddr, cli;
 
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) {
         printf("failed to init socket %s\n", strerror(errno));    
         return 1;
@@ -65,12 +64,8 @@ int dial_start(
             
           // Skip to next message when no response is expected
           if(cursor->payload[0] == 0x30 && ctx.qos == 0) {
-            struct packet * tmp = cursor;
             cursor = cursor->next;
             bzero(buff, sizeof(buff));
-        
-            free(tmp->payload);
-            free(tmp);
             continue;
           }
 
@@ -98,7 +93,10 @@ int dial_start(
                 code = 1;
                 break;
             }
-        }  
+        } else {
+            printf("weird!!!");
+            break;
+        } 
 
         int cres = packet_callback(ctx, buff, np);
         if(cres > 0) {
@@ -112,13 +110,8 @@ int dial_start(
             cursor->next = np;
         }
 
-        struct packet * tmp = cursor;
         cursor = cursor->next;
         bzero(buff, sizeof(buff));
-        
-
-        free(tmp->payload);
-        free(tmp);
     }
 
     close(sockfd);

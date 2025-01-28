@@ -149,7 +149,8 @@ int client_send(client * c, char * topic, char * format, char * payload) {
         printf("failed to dial to server %s\n", strerror(errno));    
         return 1;
     }
-    
+   
+    free_list(conn);
     return 0;
 }
 
