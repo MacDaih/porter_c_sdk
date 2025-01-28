@@ -45,10 +45,6 @@ int dial_start(
 
     unsigned char buff[MAX];
 
-    struct pollfd fd;
-    fd.fd = sockfd;
-    fd.events = POLLIN;
-
     int code = 0;
 
     struct timeval tv;
@@ -95,7 +91,7 @@ int dial_start(
             }
          }   
 
-         
+        printf("reading 0x%2x\n", buff[0]); 
         int cres = packet_callback(ctx, buff, np);
         if(cres > 0) {
             code = cres;
