@@ -62,7 +62,7 @@ int dial_start(
         // refactor
         struct packet * np = NULL;
         if(ctx.keep_alive > 0) {
-            int pres = poll(&sockfd, 1, (int)(ctx.keep_alive * 1000));
+            int pres = poll(&fd, 1, (int)(ctx.keep_alive * 1000));
             if(pres < 0) {
                 printf("failed to poll response from server %s\n", strerror(errno));    
                 close(sockfd);
