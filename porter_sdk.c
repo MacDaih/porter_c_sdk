@@ -15,14 +15,14 @@ const char * SERVER_ADDR = "SERVER_ADDR";
 
 char** client_subscriptions;
 
-QOS parse_qos(int raw) {
+uint8_t parse_qos(int raw) {
     switch(raw) {
         case 2:
-            return QOS_TWO;
+            return (uint8_t)raw;
         case 1:
-            return QOS_ONE;
+            return (uint8_t)raw;
         default:
-            return QOS_ZERO;
+            return 0;
     }
 }
 
