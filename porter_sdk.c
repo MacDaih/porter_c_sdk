@@ -180,7 +180,7 @@ int client_recv(client * c, char * topics[]) {
     conn->next = sub;
 
     // TODO solve delayed disconnect
-    if(dial_start(socketfd,c->addr, c->port, ctx, conn)) {
+    if(dial_start(c->addr, c->port, ctx, conn)) {
         printf("failed to dial to server %s\n", strerror(errno));    
         return 1;
     }
