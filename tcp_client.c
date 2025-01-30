@@ -15,12 +15,12 @@
 #define MAX 1024
 
 int dial_start(
-        int sockfd,
         char * addr,
         int port,
         context ctx,
         struct packet * p
 ) {
+    int sockfd;
     struct packet * cursor = p;
     
     struct sockaddr_in servaddr, cli;
@@ -54,7 +54,6 @@ int dial_start(
         setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
     }
     while(cursor) {
-        printf("sending 0x%2x, len -> %d\n", cursor->payload[0], cursor->len);
         int m_res = send(sockfd, cursor->payload, cursor->len, 0);
         if(m_res < 0) {
             printf("failed to write to server %s\n", strerror(errno));    
@@ -62,7 +61,6 @@ int dial_start(
             break;
         }
         
-        printf("after send %d : 0x%2x\n", ctx.qos, cursor->payload[0]);
         if(cursor->payload[0] == 0x30) {
             cursor = cursor->next;
             bzero(buff, sizeof(buff));
@@ -99,7 +97,6 @@ int dial_start(
             }
          }   
 
-        printf("reading 0x%2x\n", buff[0]); 
         int cres = packet_callback(ctx, buff, np);
         if(cres > 0) {
             code = cres;
@@ -115,6 +112,6 @@ int dial_start(
         cursor = cursor->next;
         bzero(buff, sizeof(buff));
     }
-
+    close(sockfd);
     return code;
 }
