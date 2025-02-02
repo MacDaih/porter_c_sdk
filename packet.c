@@ -401,7 +401,6 @@ struct packet * new_from_payload(unsigned char * raw) {
 int packet_callback(context ctx, unsigned char * payload, struct packet * receiver) {
     unsigned char cmd = payload[0];
 
-    printf("received %x\n", cmd);
     switch(cmd) {
         case CONNECT_CMD:
             return 0;
