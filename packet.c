@@ -269,7 +269,7 @@ void make_connect(context ctx, struct packet * pkt, property props[8]) {
     encode_str(ctx.user, pkt);
     encode_str(ctx.pwd, pkt);
     
-    write_remaining_len(pkt);
+    ;
     
     pkt->cursor = 0;
 } 
@@ -315,9 +315,10 @@ void make_publish(
         write_byte(prop_buff[i], pkt);
     
     // write payload
-    encode_str(payload, pkt);
+    for(int i = 0; i < (sizeof(payload) / sizeof(payload[0])); i++)
+        write_byte(payload[i], pkt);
 
-    write_remaining_len(pkt);
+    pkt->len = rem_len +1;
     pkt->cursor = 0;
 }
 
