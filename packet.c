@@ -269,8 +269,6 @@ void make_connect(context ctx, struct packet * pkt, property props[8]) {
     encode_str(ctx.user, pkt);
     encode_str(ctx.pwd, pkt);
     
-    ;
-    
     pkt->cursor = 0;
 } 
 
