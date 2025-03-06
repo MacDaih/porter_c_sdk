@@ -222,11 +222,9 @@ void make_connect(context ctx, struct packet * pkt, property props[8]) {
     assert(props);
     write_fix_header(connect_cmd, pkt);
 
-    size_t rem_len = 0;
-    
     int prop_size = 0;
     uint8_t * prop_buff = write_properties(props, 8, &prop_size);
-    rem_len += eval_bytes(prop_size) + prop_size;
+    size_t rem_len = eval_bytes(prop_size) + prop_size;
 
     if(ctx.user) 
         rem_len += strlen(ctx.user) + 2;
@@ -287,9 +285,8 @@ void make_publish(
 ) {
     write_byte(publish_cmd ^ (0 << 1), pkt);
     
-    size_t rem_length = strlen(topic) + 2;
-    rem_length += strlen(payload) + 2;
-
+    size_t payload_len = sizeof(payload) / sizeof(payload[0]);
+    size_t rem_length = (strlen(topic) + 2) + payload_len;
 
     // write_uint16(0, pkt);
     // topic name
@@ -297,7 +294,6 @@ void make_publish(
     uint8_t * prop_buff = write_properties(props, 7, &prop_size);
 
     rem_length += eval_bytes(rem_length) + eval_bytes(prop_size) + sizeof(prop_buff);
-
 
     encode_varint(rem_length, pkt);
 
