@@ -235,7 +235,8 @@ void make_connect(context ctx, struct packet * pkt, property props[8]) {
     if(ctx.cid) 
         rem_len += strlen(ctx.cid) + 2;
 
-    encode_varint(rem_len + 10, pkt);
+    rem_len += 10;
+    encode_varint(rem_len, pkt);
 
     // 4 + 2
     encode_str("MQTT", pkt);
@@ -262,7 +263,8 @@ void make_connect(context ctx, struct packet * pkt, property props[8]) {
     encode_varint(prop_size, pkt);
     for(int i = 0; i < prop_size; i++)
         write_byte(prop_buff[i], pkt);
-    
+   
+    // TODO will message
     encode_str(ctx.cid, pkt);
     encode_str(ctx.user, pkt);
     encode_str(ctx.pwd, pkt);
@@ -398,7 +400,7 @@ int packet_callback(context ctx, unsigned char * payload, struct packet * receiv
     unsigned char cmd = payload[0];
 
     switch(cmd) {
-        case CONNECT_CMD:
+        case CONNACK_CMD:
             return 0;
         case SUBACK_CMD:
             return 0;

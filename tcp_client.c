@@ -48,7 +48,6 @@ int dial_start(
     int code = 0;
 
     if(ctx.keep_alive > 0) {
-        printf("keep alive %d\n", ctx.keep_alive);
         struct timeval tv;
         tv.tv_sec = ctx.keep_alive;
         tv.tv_usec = 0;
@@ -56,9 +55,7 @@ int dial_start(
     }
 
     while(cursor) {
-        printf("sending %x\n", cursor->payload[0]);
         int m_res = send(sockfd, cursor->payload, cursor->len, 0);
-        printf("written %d\n", m_res);
         if(m_res < 0) {
             printf("failed to write to server %s\n", strerror(errno));    
             code = 1;
