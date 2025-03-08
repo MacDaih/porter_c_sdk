@@ -47,13 +47,15 @@ int dial_start(
 
     int code = 0;
 
-    if(ctx.keep_alive) {
+    if(ctx.keep_alive > 0) {
         struct timeval tv;
         tv.tv_sec = ctx.keep_alive;
         tv.tv_usec = 0;
         setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
     }
+
     while(cursor) {
+        printf("sending %x\n", cursor->payload[0]);
         int m_res = send(sockfd, cursor->payload, cursor->len, 0);
         if(m_res < 0) {
             printf("failed to write to server %s\n", strerror(errno));    
@@ -64,6 +66,7 @@ int dial_start(
         if(cursor->payload[0] == 0x30) {
             cursor = cursor->next;
             bzero(buff, sizeof(buff));
+            printf("skipping 0x30 message\n");
             continue;
         }
 

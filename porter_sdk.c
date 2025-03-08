@@ -145,6 +145,7 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     pub->next = disconn;
     conn->next = pub;
 
+    printf("client set up packets\n");
     int socketfd;
     if(dial_start(c->addr, c->port, ctx, conn)) {
         printf("failed to dial to server %s\n", strerror(errno));    
