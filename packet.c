@@ -235,7 +235,7 @@ void make_connect(context ctx, struct packet * pkt, property props[8]) {
     if(ctx.cid) 
         rem_len += strlen(ctx.cid) + 2;
 
-    rem_len += 10;
+    rem_len += eval_bytes(rem_len) + 10;
     encode_varint(rem_len, pkt);
 
     // 4 + 2
