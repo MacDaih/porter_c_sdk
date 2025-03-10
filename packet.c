@@ -288,8 +288,7 @@ void make_publish(
 ) {
     write_byte(publish_cmd ^ (0 << 1), pkt);
     
-    size_t payload_len = strlen(payload);
-    size_t rem_length = (strlen(topic) + 2) + payload_len;
+    size_t rem_length = (strlen(topic) + 2) + strlen(payload) + 2;
 
     // write_uint16(0, pkt);
     // topic name
@@ -312,8 +311,7 @@ void make_publish(
         write_byte(prop_buff[i], pkt);
     
     // write payload
-    for(int i = 0; i < payload_len; i++)
-        write_byte(payload[i], pkt);
+    encode_str(payload, pkt);
 
     pkt->len = rem_length +1;
     pkt->cursor = 0;
