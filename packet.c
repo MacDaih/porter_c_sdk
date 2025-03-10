@@ -295,7 +295,7 @@ void make_publish(
     int prop_size = 0; 
     uint8_t * prop_buff = write_properties(props, 7, &prop_size);
 
-    rem_length += eval_bytes(prop_size) + sizeof(prop_buff);
+    rem_length += eval_bytes(prop_size) + prop_size;
 
     encode_varint(rem_length, pkt);
 
