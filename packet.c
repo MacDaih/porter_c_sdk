@@ -214,7 +214,7 @@ uint8_t * write_properties(property props[], int prop_len, int * props_size) {
     
     uint8_t *res;
     res = (uint8_t *) realloc(enc, final);
-    *props_size = cursor;
+    *props_size = final;
     return res;
 }
 
@@ -314,6 +314,7 @@ void make_publish(
     encode_str(payload, pkt);
 
     pkt->len = rem_length +1;
+    printf("packet length : %d\n", pkt->len);
     pkt->cursor = 0;
 }
 
