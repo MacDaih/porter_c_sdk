@@ -295,7 +295,7 @@ void make_publish(
     int prop_size = 0; 
     uint8_t * prop_buff = write_properties(props, 7, &prop_size);
 
-    rem_length += eval_bytes(rem_length) + eval_bytes(prop_size) + sizeof(prop_buff);
+    rem_length += eval_bytes(prop_size) + sizeof(prop_buff);
 
     encode_varint(rem_length, pkt);
 
@@ -313,7 +313,7 @@ void make_publish(
     // write payload
     encode_str(payload, pkt);
 
-    pkt->len = rem_length +1;
+    pkt->len = rem_length + 1 + eval_bytes(rem_length);
     printf("packet length : %d\n", pkt->len);
     pkt->cursor = 0;
 }
