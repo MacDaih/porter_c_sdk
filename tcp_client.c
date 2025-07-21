@@ -30,8 +30,6 @@ int dial_start(
         return 1;
     }
 
-    bzero((char *) &servaddr, sizeof(servaddr));
-
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = inet_addr(addr);
     servaddr.sin_port = htons(port);
