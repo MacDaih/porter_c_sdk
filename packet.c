@@ -288,7 +288,7 @@ void make_publish(
 ) {
     write_byte(publish_cmd ^ (0 << 1), pkt);
     
-    size_t rem_length = (strlen(topic) + 2) + strlen(payload) + 2;
+    size_t rem_length = (strlen(topic) + 2) + (strlen(payload) + 2);
 
     // write_uint16(0, pkt);
     // topic name

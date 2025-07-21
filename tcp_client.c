@@ -8,7 +8,6 @@
 #include <unistd.h>
 #include <errno.h>
 #include <poll.h>
-#include <errno.h>
 
 #include "packet.h"
 
@@ -62,15 +61,7 @@ int dial_start(
             break;
         }
         
-        if(cursor->payload[0] == 0x30) {
-            cursor = cursor->next;
-            bzero(buff, sizeof(buff));
-            printf("skipping 0x30 message\n");
-            continue;
-        }
-
-        // refactor
-        struct packet * np = NULL;
+         struct packet * np = NULL;
     
          int r_res = recv(sockfd,buff,sizeof(buff),0);
          if(r_res < 0) {
