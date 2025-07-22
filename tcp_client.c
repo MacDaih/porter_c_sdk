@@ -97,7 +97,7 @@ int dial_start(
 
         // append to packet list
         if(np != NULL) {
-            printf("packet to append %2x\n", np.type);
+            printf("packet to append %2x\n", np->type);
             np->next = cursor->next;
             cursor->next = np;
         }
