@@ -69,14 +69,14 @@ int dial_start(
                 make_ping(ping);
 
                 bzero(buff, sizeof(buff));
-                if(write(sockfd, ping->payload, ping->len)) {
+                if(send(sockfd, ping->payload, ping->len, 0)) {
                     printf("failed to write ping to server %s\n", strerror(errno));    
                     code = 1;
                     break;
                 }
 
                 free(ping);
-                int r_res = read(sockfd, buff, sizeof(buff));
+                int r_res = recv(sockfd, buff, sizeof(buff), 0);
                 if(r_res < 0) {
                     printf("failed to read ping response from server %s\n", strerror(errno));    
                     code = 1;
