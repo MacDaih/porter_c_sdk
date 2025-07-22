@@ -68,7 +68,7 @@ int dial_start(
                 make_ping(ping);
 
                 bzero(buff, sizeof(buff));
-                send(sockfd, ping->payload, ping->len, 0));
+                send(sockfd, ping->payload, ping->len, 0);
 
                 free(ping);
                 recv(sockfd, buff, sizeof(buff), 0);
