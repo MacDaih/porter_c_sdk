@@ -44,12 +44,12 @@ int dial_start(
 
     int code = 0;
 
-    //if(ctx.keep_alive > 0) {
-    struct timeval tv;
-    tv.tv_sec = ctx.keep_alive;
-    tv.tv_usec = 0;
-    setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval));
-    //}
+    if(ctx.keep_alive > 0) {
+        struct timeval tv;
+        tv.tv_sec = ctx.keep_alive;
+        tv.tv_usec = 0;
+        setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval));
+    }
 
     while(cursor) {
         int m_res = send(sockfd, cursor->payload, cursor->len, 0);
@@ -62,6 +62,7 @@ int dial_start(
          struct packet * np = NULL;
     
          int r_res = recv(sockfd,buff,sizeof(buff),0);
+         printf("recv reads %d\n", r_res);
          if(r_res < 0) {
             if(errno == EWOULDBLOCK) {
                 struct packet * ping = new_packet();
