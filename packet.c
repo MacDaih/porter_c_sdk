@@ -314,7 +314,6 @@ void make_publish(
     encode_str(payload, pkt);
 
     pkt->len = rem_length + 1 + eval_bytes(rem_length);
-    printf("packet length : %d\n", pkt->len);
     pkt->cursor = 0;
 }
 

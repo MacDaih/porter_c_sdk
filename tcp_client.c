@@ -59,6 +59,7 @@ int dial_start(
             break;
         }
         
+         printf("packet to send %2x\n", cursor->type);
          struct packet * np = NULL;
     
          int r_res = recv(sockfd,buff,sizeof(buff),0);
@@ -87,7 +88,7 @@ int dial_start(
                 code = 1;
                 break;
             }
-         }   
+        }   
 
         int cres = packet_callback(ctx, buff, np);
         if(cres > 0) {
@@ -97,7 +98,6 @@ int dial_start(
 
         // append to packet list
         if(np != NULL) {
-            printf("packet to append %2x\n", np->type);
             np->next = cursor->next;
             cursor->next = np;
         }
