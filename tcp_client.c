@@ -55,13 +55,6 @@ int dial_start(
 
     int code = 0;
 
-   // if(ctx.keep_alive > 0) {
-   //     struct timeval tv;
-   //     tv.tv_sec = ctx.keep_alive;
-   //     tv.tv_usec = 0;
-   //     setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval));
-   // }
-
     while(cursor) {
             int m_res = send(sockfd, cursor->payload, cursor->len, 0);
             if(m_res < 0) {
@@ -80,6 +73,7 @@ int dial_start(
             switch (ret) {
                 case -1:
                     // Error
+                    printf("polling server failed %s\n", strerror(errno));    
                     break;
                 case 0:
                     ping(sockfd);
@@ -90,26 +84,6 @@ int dial_start(
             }
 
             struct packet * np = NULL;
-        
-           // int r_res = recv(sockfd,buff,sizeof(buff),0);
-           // printf("recv reads %d\n", r_res);
-           // if(r_res < 0) {
-           //     if(errno == EWOULDBLOCK) {
-           //         struct packet * ping = new_packet();
-           //         make_ping(ping);
-
-           //         bzero(buff, sizeof(buff));
-           //         send(sockfd, ping->payload, ping->len, 0);
-
-           //         free(ping);
-           //         recv(sockfd, buff, sizeof(buff), 0);
-           //         bzero(buff, sizeof(buff));
-           //     } else {
-           //         printf("failed to read from server %s\n", strerror(errno));    
-           //         code = 1;
-           //         break;
-           //     }
-           // }   
 
             int cres = packet_callback(ctx, buff, np);
             if(cres > 0) {
