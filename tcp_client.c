@@ -13,6 +13,17 @@
 
 #define MAX 1024
 
+void ping(int sockfd) {
+        unsigned char buff[MAX];
+        struct packet * ping = new_packet();
+        make_ping(ping);
+
+        send(sockfd, ping->payload, ping->len, 0);
+
+        free(ping);
+        recv(sockfd, buff, sizeof(buff), 0);
+}
+
 int dial_start(
         char * addr,
         int port,
@@ -71,18 +82,10 @@ int dial_start(
                     // Error
                     break;
                 case 0:
-                    struct packet * ping = new_packet();
-                    make_ping(ping);
-
-                    bzero(buff, sizeof(buff));
-                    send(sockfd, ping->payload, ping->len, 0);
-
-                    free(ping);
-                    recv(sockfd, buff, sizeof(buff), 0);
-                    bzero(buff, sizeof(buff));
+                    ping(sockfd);
                     break;
                 default:
-                    recv(mySocket,buf,sizeof(buff), 0); // get your data
+                    recv(sockfd,buff,sizeof(buff), 0); // get your data
                     break;
             }
 
