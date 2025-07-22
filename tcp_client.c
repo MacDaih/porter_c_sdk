@@ -44,57 +44,84 @@ int dial_start(
 
     int code = 0;
 
-    if(ctx.keep_alive > 0) {
-        struct timeval tv;
-        tv.tv_sec = ctx.keep_alive;
-        tv.tv_usec = 0;
-        setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval));
-    }
+   // if(ctx.keep_alive > 0) {
+   //     struct timeval tv;
+   //     tv.tv_sec = ctx.keep_alive;
+   //     tv.tv_usec = 0;
+   //     setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval));
+   // }
 
     while(cursor) {
-        int m_res = send(sockfd, cursor->payload, cursor->len, 0);
-        if(m_res < 0) {
-            printf("failed to write to server %s\n", strerror(errno));    
-            code = 1;
-            break;
-        }
-        
-         struct packet * np = NULL;
-    
-         int r_res = recv(sockfd,buff,sizeof(buff),0);
-         printf("recv reads %d\n", r_res);
-         if(r_res < 0) {
-            if(errno == EWOULDBLOCK) {
-                struct packet * ping = new_packet();
-                make_ping(ping);
-
-                bzero(buff, sizeof(buff));
-                send(sockfd, ping->payload, ping->len, 0);
-
-                free(ping);
-                recv(sockfd, buff, sizeof(buff), 0);
-                bzero(buff, sizeof(buff));
-            } else {
-                printf("failed to read from server %s\n", strerror(errno));    
+            int m_res = send(sockfd, cursor->payload, cursor->len, 0);
+            if(m_res < 0) {
+                printf("failed to write to server %s\n", strerror(errno));    
                 code = 1;
                 break;
             }
-        }   
+           
 
-        int cres = packet_callback(ctx, buff, np);
-        if(cres > 0) {
-            code = cres;
-            break;
-        }
+            struct pollfd fd;
+            int ret;
 
-        // append to packet list
-        if(np != NULL) {
-            np->next = cursor->next;
-            cursor->next = np;
-        }
+            fd.fd = sockfd;
+            fd.events = POLLIN;
+            ret = poll(&fd, 1, ctx.keep_alive);
+            switch (ret) {
+                case -1:
+                    // Error
+                    break;
+                case 0:
+                    struct packet * ping = new_packet();
+                    make_ping(ping);
 
-        cursor = cursor->next;
-        bzero(buff, sizeof(buff));
+                    bzero(buff, sizeof(buff));
+                    send(sockfd, ping->payload, ping->len, 0);
+
+                    free(ping);
+                    recv(sockfd, buff, sizeof(buff), 0);
+                    bzero(buff, sizeof(buff));
+                    break;
+                default:
+                    recv(mySocket,buf,sizeof(buf), 0); // get your data
+                    break;
+            }
+
+            struct packet * np = NULL;
+        
+           // int r_res = recv(sockfd,buff,sizeof(buff),0);
+           // printf("recv reads %d\n", r_res);
+           // if(r_res < 0) {
+           //     if(errno == EWOULDBLOCK) {
+           //         struct packet * ping = new_packet();
+           //         make_ping(ping);
+
+           //         bzero(buff, sizeof(buff));
+           //         send(sockfd, ping->payload, ping->len, 0);
+
+           //         free(ping);
+           //         recv(sockfd, buff, sizeof(buff), 0);
+           //         bzero(buff, sizeof(buff));
+           //     } else {
+           //         printf("failed to read from server %s\n", strerror(errno));    
+           //         code = 1;
+           //         break;
+           //     }
+           // }   
+
+            int cres = packet_callback(ctx, buff, np);
+            if(cres > 0) {
+                code = cres;
+                break;
+            }
+
+            // append to packet list
+            if(np != NULL) {
+                np->next = cursor->next;
+                cursor->next = np;
+            }
+
+            cursor = cursor->next;
+            bzero(buff, sizeof(buff));
     }
     close(sockfd);
     return code;
