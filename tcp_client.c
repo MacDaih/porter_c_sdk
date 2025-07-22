@@ -48,7 +48,7 @@ int dial_start(
         struct timeval tv;
         tv.tv_sec = ctx.keep_alive;
         tv.tv_usec = 0;
-        setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
+        setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval));
     }
 
     while(cursor) {
@@ -59,10 +59,10 @@ int dial_start(
             break;
         }
         
-         printf("packet to send %2x\n", cursor->payload[0]);
          struct packet * np = NULL;
     
          int r_res = recv(sockfd,buff,sizeof(buff),0);
+         printf("recv res %d\n", r_res);
          if(r_res < 0) {
             if(errno == EWOULDBLOCK) {
                 struct packet * ping = new_packet();
