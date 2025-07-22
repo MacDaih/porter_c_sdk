@@ -64,24 +64,14 @@ int dial_start(
          int r_res = recv(sockfd,buff,sizeof(buff),0);
          if(r_res < 0) {
             if(errno == EWOULDBLOCK) {
-                printf("ping\n");
                 struct packet * ping = new_packet();
                 make_ping(ping);
 
                 bzero(buff, sizeof(buff));
-                if(send(sockfd, ping->payload, ping->len, 0)) {
-                    printf("failed to write ping to server %s\n", strerror(errno));    
-                    code = 1;
-                    break;
-                }
+                send(sockfd, ping->payload, ping->len, 0));
 
                 free(ping);
-                int r_res = recv(sockfd, buff, sizeof(buff), 0);
-                if(r_res < 0) {
-                    printf("failed to read ping response from server %s\n", strerror(errno));    
-                    code = 1;
-                    break;
-                }
+                recv(sockfd, buff, sizeof(buff), 0);
                 bzero(buff, sizeof(buff));
             } else {
                 printf("failed to read from server %s\n", strerror(errno));    
