@@ -62,9 +62,9 @@ int dial_start(
          struct packet * np = NULL;
     
          int r_res = recv(sockfd,buff,sizeof(buff),0);
-         printf("recv res %d\n", r_res);
          if(r_res < 0) {
             if(errno == EWOULDBLOCK) {
+                printf("ping\n");
                 struct packet * ping = new_packet();
                 make_ping(ping);
 
