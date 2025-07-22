@@ -81,6 +81,7 @@ int dial_start(
                     code = 1;
                     break;
                 }
+                bzero(buff, sizeof(buff));
             } else {
                 printf("failed to read from server %s\n", strerror(errno));    
                 code = 1;
@@ -96,6 +97,7 @@ int dial_start(
 
         // append to packet list
         if(np != NULL) {
+            printf("packet to append %2x\n", np.type);
             np->next = cursor->next;
             cursor->next = np;
         }
