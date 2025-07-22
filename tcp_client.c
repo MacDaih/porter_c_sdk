@@ -82,7 +82,7 @@ int dial_start(
                     bzero(buff, sizeof(buff));
                     break;
                 default:
-                    recv(mySocket,buf,sizeof(buf), 0); // get your data
+                    recv(mySocket,buf,sizeof(buff), 0); // get your data
                     break;
             }
 
