@@ -59,7 +59,7 @@ int dial_start(
             break;
         }
         
-         printf("packet to send %2x\n", cursor->type);
+         printf("packet to send %2x\n", cursor->payload[0]);
          struct packet * np = NULL;
     
          int r_res = recv(sockfd,buff,sizeof(buff),0);
