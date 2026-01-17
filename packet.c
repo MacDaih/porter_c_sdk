@@ -284,7 +284,7 @@ void make_publish(
     struct packet * pkt,
     char * topic,
     char * payload,
-    property props[7]
+    property props[8]
 ) {
     write_byte(publish_cmd ^ (0 << 1), pkt);
     
@@ -293,7 +293,7 @@ void make_publish(
     // write_uint16(0, pkt);
     // topic name
     int prop_size = 0; 
-    uint8_t * prop_buff = write_properties(props, 7, &prop_size);
+    uint8_t * prop_buff = write_properties(props, 8, &prop_size);
 
     rem_length += eval_bytes(prop_size) + prop_size;
 

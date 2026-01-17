@@ -84,7 +84,7 @@ struct packet * init_connect(context ctx) {
 struct packet * init_publish(client * c,char * topic, char * format, char * payload) {
     struct packet * pub = new_packet();
     // make properties
-    property * props = calloc(7,sizeof(property));
+    property * props = calloc(8,sizeof(property));
     if(format) {
         // format indicator
         property fi = { 
