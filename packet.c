@@ -314,7 +314,7 @@ void make_publish(
     for(int i = 0; i < strlen(payload); i++)
         write_byte(payload[i], pkt);
 
-    pkt->len = strlen(payload);
+    pkt->len = strlen(pkt->payload);
     pkt->cursor = 0;
 }
 
