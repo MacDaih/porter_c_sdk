@@ -138,6 +138,7 @@ int client_send(client * c, char * topic, char * format, char * payload) {
     
     struct packet * conn = init_connect(ctx);
 
+    printf("----\n[porter_sdk.c] Debug Payload : %s\n", payload);
     struct packet * pub = init_publish(c, topic, format, payload);
 
     struct packet * disconn = init_disc();
