@@ -314,8 +314,10 @@ void make_publish(
     for(int i = 0; i < strlen(payload); i++)
         write_byte(payload[i], pkt);
 
-    printf("----\n[packet.c] Debug Packet Payload : %s\n", pkt->payload);
+
+    printf("----\n[packet.c] Debug Packet Payload : %s\n", pkt.payload);
     pkt->len = rem_length + 1 + eval_bytes(rem_length);
+    pkt->payload = (char *) realloc(pkt->payload, pkt->len);
     pkt->cursor = 0;
 }
 
